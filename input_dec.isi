@@ -1,5 +1,6 @@
 programa
     declare a.
-    leia (a).
+    leia(a).
+    a := 8 / 2 * (2 + 2) + a + 8 / 2 * (2 + 2).
     escreva(a).
 fimprog.

@@ -24,6 +24,17 @@ func (c *Parser) exprInternal(ctx *context.Context, left lang.Expr, delta TokenD
 		return c.exprAux(ctx, left, delta)
 	}
 
+	term, delta, err := c.term(ctx, left, delta)
+	if err != nil {
+		return nil, delta, err
+	}
+
+	leftExpr := lang.NewTermExpr(ctx, term)
+
+	if delta.token.IsOperator() && (delta.token.Is(syntax.Sum) || delta.token.Is(syntax.Minus)) {
+		return c.exprAux(ctx, leftExpr, delta)
+	}
+
 	return c.term(ctx, left, delta)
 }
 
