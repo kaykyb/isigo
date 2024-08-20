@@ -27,11 +27,18 @@ func main() {
 	}
 
 	l := lexer.LexicalAnalysis{}
-	l.SetContent(string(content))
+	err = l.SetContent(string(content))
+
+	if err != nil {
+		log.Fatalf("Erro ao ler o arquivo: %v", err)
+	}
 
 	p := parser.New(&l)
 	ctx := context.New()
-	prog, _, err := p.Prog(&ctx)
+	prog, delta, err := p.Prog(&ctx)
+	if err != nil {
+		log.Fatalf("Erro: [Linha %d, Coluna %d]: %v", delta.Position().Line+1, delta.Position().Column+1, err)
+	}
 
 	code, err := prog.Output()
 
@@ -74,14 +81,14 @@ func writeArtifact(filePath string, content string) {
 	file, err := os.Create(filePath)
 	if err != nil {
 		fmt.Println("Erro criando artefato:", err)
-		panic("A compilação falhou.")
+		stop()
 	}
 	defer file.Close()
 
 	_, err = file.WriteString(content)
 	if err != nil {
 		fmt.Println("Erro ao escrever no artefato:", err)
-		return
+		stop()
 	}
 	fmt.Println("Artefato compilado:", filePath)
 }
@@ -95,6 +102,10 @@ func buildOutProgram(outputDirPath string) {
 	_, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println("Erro ao compilar:", err)
-		panic("A compilação falhou.")
+		stop()
 	}
+}
+
+func stop() {
+	panic("A compilação falhou.")
 }

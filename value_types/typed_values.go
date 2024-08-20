@@ -1,7 +1,7 @@
 package value_types
 
 import (
-	"isigo/compiler_error"
+	"isigo/failure"
 	"reflect"
 )
 
@@ -88,7 +88,7 @@ func (v integerValueType) ResultingSubtractType(by ValueType) (ValueType, error)
 		return FloatValueTypeEntity, nil
 	}
 
-	return FloatValueTypeEntity, compiler_error.CannotDivideTypes(v.Name(), by.Name())
+	return FloatValueTypeEntity, failure.CannotDivideTypes(v.Name(), by.Name())
 }
 
 func (v integerValueType) ResultingSumType(by ValueType) (ValueType, error) {
@@ -100,7 +100,7 @@ func (v integerValueType) ResultingSumType(by ValueType) (ValueType, error) {
 		return FloatValueTypeEntity, nil
 	}
 
-	return FloatValueTypeEntity, compiler_error.CannotDivideTypes(v.Name(), by.Name())
+	return FloatValueTypeEntity, failure.CannotDivideTypes(v.Name(), by.Name())
 }
 
 func (v integerValueType) ResultingMultiplicationType(by ValueType) (ValueType, error) {
@@ -108,7 +108,7 @@ func (v integerValueType) ResultingMultiplicationType(by ValueType) (ValueType, 
 		return FloatValueTypeEntity, nil
 	}
 
-	return FloatValueTypeEntity, compiler_error.CannotDivideTypes(v.Name(), by.Name())
+	return FloatValueTypeEntity, failure.CannotDivideTypes(v.Name(), by.Name())
 }
 
 func (v integerValueType) ResultingDivisionType(by ValueType) (ValueType, error) {
@@ -116,7 +116,7 @@ func (v integerValueType) ResultingDivisionType(by ValueType) (ValueType, error)
 		return FloatValueTypeEntity, nil
 	}
 
-	return FloatValueTypeEntity, compiler_error.CannotDivideTypes(v.Name(), by.Name())
+	return FloatValueTypeEntity, failure.CannotDivideTypes(v.Name(), by.Name())
 }
 
 // ------------- Floats
@@ -130,7 +130,7 @@ func (v floatValueType) ResultingSubtractType(by ValueType) (ValueType, error) {
 		return FloatValueTypeEntity, nil
 	}
 
-	return FloatValueTypeEntity, compiler_error.CannotDivideTypes(v.Name(), by.Name())
+	return FloatValueTypeEntity, failure.CannotDivideTypes(v.Name(), by.Name())
 }
 
 func (v floatValueType) ResultingSumType(by ValueType) (ValueType, error) {
@@ -138,7 +138,7 @@ func (v floatValueType) ResultingSumType(by ValueType) (ValueType, error) {
 		return FloatValueTypeEntity, nil
 	}
 
-	return FloatValueTypeEntity, compiler_error.CannotDivideTypes(v.Name(), by.Name())
+	return FloatValueTypeEntity, failure.CannotDivideTypes(v.Name(), by.Name())
 }
 
 func (v floatValueType) ResultingMultiplicationType(by ValueType) (ValueType, error) {
@@ -146,7 +146,7 @@ func (v floatValueType) ResultingMultiplicationType(by ValueType) (ValueType, er
 		return FloatValueTypeEntity, nil
 	}
 
-	return FloatValueTypeEntity, compiler_error.CannotDivideTypes(v.Name(), by.Name())
+	return FloatValueTypeEntity, failure.CannotDivideTypes(v.Name(), by.Name())
 }
 
 func (v floatValueType) ResultingDivisionType(by ValueType) (ValueType, error) {
@@ -154,7 +154,7 @@ func (v floatValueType) ResultingDivisionType(by ValueType) (ValueType, error) {
 		return FloatValueTypeEntity, nil
 	}
 
-	return FloatValueTypeEntity, compiler_error.CannotDivideTypes(v.Name(), by.Name())
+	return FloatValueTypeEntity, failure.CannotDivideTypes(v.Name(), by.Name())
 }
 
 // ----------- Strings

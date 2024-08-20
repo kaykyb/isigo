@@ -2,8 +2,8 @@ package lang
 
 import (
 	"fmt"
-	"isigo/compiler_error"
 	"isigo/context"
+	"isigo/failure"
 	"isigo/value_types"
 )
 
@@ -103,7 +103,7 @@ func (n DivideTerm) ResultingType() (value_types.ValueType, error) {
 
 	leftTypeDivisible, ok := leftType.(value_types.DivisibleValueType)
 	if !ok {
-		return value_types.FloatValueTypeEntity, compiler_error.TypeNotDivisible(leftType.Name())
+		return value_types.FloatValueTypeEntity, failure.TypeNotDivisible(leftType.Name())
 	}
 
 	return leftTypeDivisible.ResultingDivisionType(factorType)
@@ -122,7 +122,7 @@ func (n MultiplyTerm) ResultingType() (value_types.ValueType, error) {
 
 	leftTypeMultipliable, ok := leftType.(value_types.MultipliableValueType)
 	if !ok {
-		return value_types.FloatValueTypeEntity, compiler_error.TypeNotMultipliable(leftType.Name())
+		return value_types.FloatValueTypeEntity, failure.TypeNotMultipliable(leftType.Name())
 	}
 
 	return leftTypeMultipliable.ResultingMultiplicationType(factorType)

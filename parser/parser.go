@@ -21,6 +21,10 @@ func New(lexicalAnalysis *lexer.LexicalAnalysis) Parser {
 	}
 }
 
+func (d TokenDelta) Position() common.CodePosition {
+	return d.position
+}
+
 func (c *Parser) nextToken() (TokenDelta, error) {
 	token, position, err := c.lexicalAnalysis.NextToken()
 	return TokenDelta{

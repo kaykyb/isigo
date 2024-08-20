@@ -66,6 +66,10 @@ func (l *LexicalAnalysis) NextToken() (token tokens.Token, tokenPosition common.
 func (l *LexicalAnalysis) Tokenize() (tokensFound []tokens.Token, err error) {
 	token, _, err := l.NextToken()
 
+	if err != nil {
+		return tokensFound, err
+	}
+
 	for token.Type() != tokens.EOF {
 		tokensFound = append(tokensFound, token)
 		token, _, err = l.NextToken()

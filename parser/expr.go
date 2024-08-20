@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"isigo/compiler_error"
 	"isigo/context"
+	"isigo/failure"
 	"isigo/lang"
 	"isigo/syntax"
 	"isigo/tokens"
@@ -64,7 +64,7 @@ func (c *Parser) sumExpr(ctx *context.Context, left lang.Term, delta TokenDelta)
 
 	leftTypeSumable, ok := leftType.(value_types.SumableValueType)
 	if !ok {
-		return lang.SumExpr{}, delta, compiler_error.TypeNotSumable(leftType.Name())
+		return lang.SumExpr{}, delta, failure.TypeNotSumable(leftType.Name())
 	}
 
 	delta, err = c.nextToken()
@@ -108,7 +108,7 @@ func (c *Parser) subtractExpr(ctx *context.Context, left lang.Term, delta TokenD
 
 	leftTypeSubtractable, ok := leftType.(value_types.SubtractableValueType)
 	if !ok {
-		return lang.SubtractExpr{}, delta, compiler_error.TypeNotSubtractable(leftType.Name())
+		return lang.SubtractExpr{}, delta, failure.TypeNotSubtractable(leftType.Name())
 	}
 
 	delta, err = c.nextToken()
@@ -190,7 +190,7 @@ func (c *Parser) multiplyTermAux(ctx *context.Context, left lang.Factor, delta T
 
 	leftTypeMultipliable, ok := leftType.(value_types.MultipliableValueType)
 	if !ok {
-		return lang.MultiplyTerm{}, delta, compiler_error.TypeNotMultipliable(leftType.Name())
+		return lang.MultiplyTerm{}, delta, failure.TypeNotMultipliable(leftType.Name())
 	}
 
 	delta, err = c.nextToken()
@@ -229,7 +229,7 @@ func (c *Parser) divideTermAux(ctx *context.Context, left lang.Factor, delta Tok
 
 	leftTypeMultipliable, ok := leftType.(value_types.DivisibleValueType)
 	if !ok {
-		return lang.DivideTerm{}, delta, compiler_error.TypeNotDivisible(leftType.Name())
+		return lang.DivideTerm{}, delta, failure.TypeNotDivisible(leftType.Name())
 	}
 
 	delta, err = c.nextToken()

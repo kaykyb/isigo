@@ -2,8 +2,8 @@ package lang
 
 import (
 	"fmt"
-	"isigo/compiler_error"
 	"isigo/context"
+	"isigo/failure"
 	"isigo/value_types"
 )
 
@@ -77,7 +77,7 @@ func (n SumExpr) ResultingType() (value_types.ValueType, error) {
 
 	leftTypeSumable, ok := leftType.(value_types.SumableValueType)
 	if !ok {
-		return value_types.FloatValueTypeEntity, compiler_error.TypeNotSumable(leftType.Name())
+		return value_types.FloatValueTypeEntity, failure.TypeNotSumable(leftType.Name())
 	}
 
 	return leftTypeSumable.ResultingSumType(termType)
@@ -126,7 +126,7 @@ func (n SubtractExpr) ResultingType() (value_types.ValueType, error) {
 
 	leftTypeSubtractable, ok := leftType.(value_types.SubtractableValueType)
 	if !ok {
-		return value_types.FloatValueTypeEntity, compiler_error.TypeNotSubtractable(leftType.Name())
+		return value_types.FloatValueTypeEntity, failure.TypeNotSubtractable(leftType.Name())
 	}
 
 	return leftTypeSubtractable.ResultingSubtractType(termType)
