@@ -1,12 +1,12 @@
 package parser
 
 import (
-	"isigo/ast"
 	"isigo/context"
+	"isigo/lang"
 	"isigo/syntax"
 )
 
-func (c *Parser) VariableContext(ctx *context.Context, delta TokenDelta) (ast.Node, TokenDelta, error) {
+func (c *Parser) VariableContext(ctx *context.Context, delta TokenDelta) (lang.Node, TokenDelta, error) {
 	// -> cmd
 	if !delta.token.IsReservedWord() || !delta.token.Is(syntax.Declare) {
 		return c.ExecutionContext(ctx, delta)
@@ -17,7 +17,7 @@ func (c *Parser) VariableContext(ctx *context.Context, delta TokenDelta) (ast.No
 
 	declare, delta, err := c.Declare(&newContext, delta)
 	if err != nil {
-		return ast.VariableContext{}, delta, err
+		return lang.VariableContext{}, delta, err
 	}
 
 	// -> fim bloco
@@ -28,8 +28,8 @@ func (c *Parser) VariableContext(ctx *context.Context, delta TokenDelta) (ast.No
 	// -> declare ou expr
 	insideVariableContext, delta, err := c.VariableContext(&newContext, delta)
 	if err != nil {
-		return ast.VariableContext{}, delta, err
+		return lang.VariableContext{}, delta, err
 	}
 
-	return ast.NewVariableContext(ctx, declare, insideVariableContext), delta, err
+	return lang.NewVariableContext(ctx, declare, insideVariableContext), delta, err
 }

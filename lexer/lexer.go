@@ -3,6 +3,7 @@ package lexer
 import (
 	"fmt"
 	"isigo/common"
+	"isigo/failure"
 	"isigo/tokens"
 )
 
@@ -51,10 +52,6 @@ func (l *LexicalAnalysis) NextToken() (token tokens.Token, tokenPosition common.
 		l.position = l.newPosition(delta)
 
 		if err != nil {
-			err = &LexerError{
-				err: err.Error(),
-			}
-
 			return token, l.position, err
 		}
 	}
@@ -132,9 +129,7 @@ func (l *LexicalAnalysis) decideNextTokenConsumer() (ConsumeTokenFunc, common.Co
 	case IsStringDelimiter(nextRune):
 		return l.consumeString, l.position, nil
 	default:
-		return nil, l.position, &LexerError{
-			err: fmt.Sprintf("'%c' não é um caractere permitido para iniciar um símbolo.", nextRune),
-		}
+		return nil, l.position, failure.UnexpectedCharacter(nextRune)
 	}
 }
 
@@ -277,7 +272,7 @@ func (l *LexicalAnalysis) consumeAssignment() (ConsumptionDelta, *tokens.Token, 
 			runesConsumed:   2,
 		}
 
-		return info, nil, fmt.Errorf("Malformed assignment operator. Expected =, got %c", proceedingRune)
+		return info, nil, failure.MalformedAssignmentOperator(proceedingRune)
 	}
 
 	delta := ConsumptionDelta{
@@ -392,7 +387,7 @@ func (l *LexicalAnalysis) consumeString() (ConsumptionDelta, *tokens.Token, erro
 	token := tokens.NewString(content)
 
 	if isInText {
-		err = fmt.Errorf("Expected '\"' (quote) to conclude string of text")
+		err = failure.ExpectedEndQuote()
 	}
 
 	return delta, &token, err

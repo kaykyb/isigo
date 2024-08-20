@@ -1,5 +1,5 @@
 programa
-    declare a,b,c,d.
+    declare a.
     leia (a).
-    b := 1.
+    escreva(a).
 fimprog.

@@ -1,12 +1,12 @@
 package parser
 
 import (
-	"isigo/ast"
 	"isigo/context"
+	"isigo/lang"
 	"isigo/syntax"
 )
 
-func (c *Parser) DeclareOrCommand(ctx *context.Context, delta TokenDelta) (ast.Node, TokenDelta, error) {
+func (c *Parser) DeclareOrCommand(ctx *context.Context, delta TokenDelta) (lang.Node, TokenDelta, error) {
 	if delta.token.IsReservedWord() {
 		// -> declare
 		if delta.token.Is(syntax.Declare) {
@@ -24,7 +24,7 @@ func (c *Parser) DeclareOrCommand(ctx *context.Context, delta TokenDelta) (ast.N
 
 		// -> escreva
 		if delta.token.Is(syntax.Write) {
-
+			return c.Write(ctx, delta)
 		}
 	}
 
@@ -33,9 +33,5 @@ func (c *Parser) DeclareOrCommand(ctx *context.Context, delta TokenDelta) (ast.N
 		return c.Assignment(ctx, delta)
 	}
 
-	return ast.Block{}, delta, errorf(
-		"Esperava uma expressão ou bloco de comando, encontrada %s '%s'.",
-		delta.token.FriendlyString(),
-		delta.token.Content(),
-	)
+	return lang.Block{}, delta, expressionBlockExpected(delta)
 }

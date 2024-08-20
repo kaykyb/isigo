@@ -1,25 +1,25 @@
 package parser
 
 import (
-	"isigo/ast"
 	"isigo/compiler_error"
 	"isigo/context"
+	"isigo/lang"
 	"isigo/syntax"
 	"isigo/tokens"
 	"isigo/value_types"
 	"strconv"
 )
 
-func (c *Parser) Expr(ctx *context.Context, delta TokenDelta) (ast.Expr, TokenDelta, error) {
+func (c *Parser) Expr(ctx *context.Context, delta TokenDelta) (lang.Expr, TokenDelta, error) {
 	factor, delta, err := c.Factor(ctx, delta)
 	if err != nil {
-		return ast.TermExpr{}, delta, err
+		return lang.TermExpr{}, delta, err
 	}
 
 	return c.exprInternal(ctx, factor, delta)
 }
 
-func (c *Parser) exprInternal(ctx *context.Context, left ast.Expr, delta TokenDelta) (ast.Expr, TokenDelta, error) {
+func (c *Parser) exprInternal(ctx *context.Context, left lang.Expr, delta TokenDelta) (lang.Expr, TokenDelta, error) {
 	if delta.token.IsOperator() && (delta.token.Is(syntax.Sum) || delta.token.Is(syntax.Minus)) {
 		return c.exprAux(ctx, left, delta)
 	}
@@ -27,12 +27,12 @@ func (c *Parser) exprInternal(ctx *context.Context, left ast.Expr, delta TokenDe
 	return c.term(ctx, left, delta)
 }
 
-func (c *Parser) exprAux(ctx *context.Context, left ast.Expr, delta TokenDelta) (ast.Expr, TokenDelta, error) {
+func (c *Parser) exprAux(ctx *context.Context, left lang.Expr, delta TokenDelta) (lang.Expr, TokenDelta, error) {
 	if !delta.token.IsOperator() {
-		return ast.TermExpr{}, delta, unexpectedTokenTypeError(delta, tokens.Operator)
+		return lang.TermExpr{}, delta, unexpectedTokenTypeError(delta, tokens.Operator)
 	}
 
-	var leftExpr ast.Expr
+	var leftExpr lang.Expr
 	var err error
 
 	if delta.token.Is(syntax.Sum) {
@@ -52,113 +52,113 @@ func (c *Parser) exprAux(ctx *context.Context, left ast.Expr, delta TokenDelta) 
 	return leftExpr, delta, nil
 }
 
-func (c *Parser) sumExpr(ctx *context.Context, left ast.Term, delta TokenDelta) (ast.SumExpr, TokenDelta, error) {
+func (c *Parser) sumExpr(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.SumExpr, TokenDelta, error) {
 	if !delta.token.Is(syntax.Sum) {
-		return ast.SumExpr{}, delta, unexpectedContentError(delta, syntax.Sum)
+		return lang.SumExpr{}, delta, unexpectedContentError(delta, syntax.Sum)
 	}
 
 	leftType, err := left.ResultingType()
 	if err != nil {
-		return ast.SumExpr{}, delta, err
+		return lang.SumExpr{}, delta, err
 	}
 
 	leftTypeSumable, ok := leftType.(value_types.SumableValueType)
 	if !ok {
-		return ast.SumExpr{}, delta, compiler_error.TypeNotSumable(leftType.Name())
+		return lang.SumExpr{}, delta, compiler_error.TypeNotSumable(leftType.Name())
 	}
 
 	delta, err = c.nextToken()
 	if err != nil {
-		return ast.SumExpr{}, delta, err
+		return lang.SumExpr{}, delta, err
 	}
 
 	factor, delta, err := c.Factor(ctx, delta)
 	if err != nil {
-		return ast.SumExpr{}, delta, err
+		return lang.SumExpr{}, delta, err
 	}
 
 	term, delta, err := c.term(ctx, factor, delta)
 	if err != nil {
-		return ast.SumExpr{}, delta, err
+		return lang.SumExpr{}, delta, err
 	}
 
 	termType, err := term.ResultingType()
 	if err != nil {
-		return ast.SumExpr{}, delta, err
+		return lang.SumExpr{}, delta, err
 	}
 
 	_, err = leftTypeSumable.ResultingSumType(termType)
 	if err != nil {
-		return ast.SumExpr{}, delta, err
+		return lang.SumExpr{}, delta, err
 	}
 
-	leftTerm := ast.NewTermExpr(ctx, left)
-	return ast.NewSumExpr(ctx, leftTerm, term), delta, err
+	leftTerm := lang.NewTermExpr(ctx, left)
+	return lang.NewSumExpr(ctx, leftTerm, term), delta, err
 }
 
-func (c *Parser) subtractExpr(ctx *context.Context, left ast.Term, delta TokenDelta) (ast.SubtractExpr, TokenDelta, error) {
+func (c *Parser) subtractExpr(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.SubtractExpr, TokenDelta, error) {
 	if !delta.token.Is(syntax.Minus) {
-		return ast.SubtractExpr{}, delta, unexpectedContentError(delta, syntax.Minus)
+		return lang.SubtractExpr{}, delta, unexpectedContentError(delta, syntax.Minus)
 	}
 
 	leftType, err := left.ResultingType()
 	if err != nil {
-		return ast.SubtractExpr{}, delta, err
+		return lang.SubtractExpr{}, delta, err
 	}
 
 	leftTypeSubtractable, ok := leftType.(value_types.SubtractableValueType)
 	if !ok {
-		return ast.SubtractExpr{}, delta, compiler_error.TypeNotSubtractable(leftType.Name())
+		return lang.SubtractExpr{}, delta, compiler_error.TypeNotSubtractable(leftType.Name())
 	}
 
 	delta, err = c.nextToken()
 	if err != nil {
-		return ast.SubtractExpr{}, delta, err
+		return lang.SubtractExpr{}, delta, err
 	}
 
 	factor, delta, err := c.Factor(ctx, delta)
 	if err != nil {
-		return ast.SubtractExpr{}, delta, err
+		return lang.SubtractExpr{}, delta, err
 	}
 
 	term, delta, err := c.term(ctx, factor, delta)
 	if err != nil {
-		return ast.SubtractExpr{}, delta, err
+		return lang.SubtractExpr{}, delta, err
 	}
 
 	termType, err := term.ResultingType()
 	if err != nil {
-		return ast.SubtractExpr{}, delta, err
+		return lang.SubtractExpr{}, delta, err
 	}
 
 	_, err = leftTypeSubtractable.ResultingSubtractType(termType)
 	if err != nil {
-		return ast.SubtractExpr{}, delta, err
+		return lang.SubtractExpr{}, delta, err
 	}
 
 	delta, err = c.nextToken()
 	if err != nil {
-		return ast.SubtractExpr{}, delta, err
+		return lang.SubtractExpr{}, delta, err
 	}
 
-	leftTerm := ast.NewTermExpr(ctx, left)
-	return ast.NewSubtractExpr(ctx, leftTerm, term), delta, err
+	leftTerm := lang.NewTermExpr(ctx, left)
+	return lang.NewSubtractExpr(ctx, leftTerm, term), delta, err
 }
 
-func (c *Parser) term(ctx *context.Context, left ast.Term, delta TokenDelta) (ast.Term, TokenDelta, error) {
+func (c *Parser) term(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.Term, TokenDelta, error) {
 	if delta.token.IsOperator() && (delta.token.Is(syntax.Multiply) || delta.token.Is(syntax.Divide)) {
 		return c.termAux(ctx, left, delta)
 	}
 
-	return ast.NewFactorTerm(ctx, left), delta, nil
+	return lang.NewFactorTerm(ctx, left), delta, nil
 }
 
-func (c *Parser) termAux(ctx *context.Context, left ast.Term, delta TokenDelta) (ast.Term, TokenDelta, error) {
+func (c *Parser) termAux(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.Term, TokenDelta, error) {
 	if !delta.token.IsOperator() {
-		return ast.MultiplyTerm{}, delta, unexpectedTokenTypeError(delta, tokens.Operator)
+		return lang.MultiplyTerm{}, delta, unexpectedTokenTypeError(delta, tokens.Operator)
 	}
 
-	var leftTerm ast.Term
+	var leftTerm lang.Term
 	var err error
 
 	if delta.token.Is(syntax.Multiply) {
@@ -178,85 +178,85 @@ func (c *Parser) termAux(ctx *context.Context, left ast.Term, delta TokenDelta) 
 	return leftTerm, delta, nil
 }
 
-func (c *Parser) multiplyTermAux(ctx *context.Context, left ast.Factor, delta TokenDelta) (ast.MultiplyTerm, TokenDelta, error) {
+func (c *Parser) multiplyTermAux(ctx *context.Context, left lang.Factor, delta TokenDelta) (lang.MultiplyTerm, TokenDelta, error) {
 	if !delta.token.Is(syntax.Multiply) {
-		return ast.MultiplyTerm{}, delta, unexpectedContentError(delta, syntax.Multiply)
+		return lang.MultiplyTerm{}, delta, unexpectedContentError(delta, syntax.Multiply)
 	}
 
 	leftType, err := left.ResultingType()
 	if err != nil {
-		return ast.MultiplyTerm{}, delta, err
+		return lang.MultiplyTerm{}, delta, err
 	}
 
 	leftTypeMultipliable, ok := leftType.(value_types.MultipliableValueType)
 	if !ok {
-		return ast.MultiplyTerm{}, delta, compiler_error.TypeNotMultipliable(leftType.Name())
+		return lang.MultiplyTerm{}, delta, compiler_error.TypeNotMultipliable(leftType.Name())
 	}
 
 	delta, err = c.nextToken()
 	if err != nil {
-		return ast.MultiplyTerm{}, delta, err
+		return lang.MultiplyTerm{}, delta, err
 	}
 
 	factor, delta, err := c.Factor(ctx, delta)
 	if err != nil {
-		return ast.MultiplyTerm{}, delta, err
+		return lang.MultiplyTerm{}, delta, err
 	}
 
 	factorType, err := factor.ResultingType()
 	if err != nil {
-		return ast.MultiplyTerm{}, delta, err
+		return lang.MultiplyTerm{}, delta, err
 	}
 
 	_, err = leftTypeMultipliable.ResultingMultiplicationType(factorType)
 	if err != nil {
-		return ast.MultiplyTerm{}, delta, err
+		return lang.MultiplyTerm{}, delta, err
 	}
 
-	leftTerm := ast.NewFactorTerm(ctx, left)
-	return ast.NewMultiplyTerm(ctx, leftTerm, factor), delta, err
+	leftTerm := lang.NewFactorTerm(ctx, left)
+	return lang.NewMultiplyTerm(ctx, leftTerm, factor), delta, err
 }
 
-func (c *Parser) divideTermAux(ctx *context.Context, left ast.Factor, delta TokenDelta) (ast.DivideTerm, TokenDelta, error) {
+func (c *Parser) divideTermAux(ctx *context.Context, left lang.Factor, delta TokenDelta) (lang.DivideTerm, TokenDelta, error) {
 	if !delta.token.Is(syntax.Divide) {
-		return ast.DivideTerm{}, delta, unexpectedContentError(delta, syntax.Divide)
+		return lang.DivideTerm{}, delta, unexpectedContentError(delta, syntax.Divide)
 	}
 
 	leftType, err := left.ResultingType()
 	if err != nil {
-		return ast.DivideTerm{}, delta, err
+		return lang.DivideTerm{}, delta, err
 	}
 
 	leftTypeMultipliable, ok := leftType.(value_types.DivisibleValueType)
 	if !ok {
-		return ast.DivideTerm{}, delta, compiler_error.TypeNotDivisible(leftType.Name())
+		return lang.DivideTerm{}, delta, compiler_error.TypeNotDivisible(leftType.Name())
 	}
 
 	delta, err = c.nextToken()
 	if err != nil {
-		return ast.DivideTerm{}, delta, err
+		return lang.DivideTerm{}, delta, err
 	}
 
 	factor, delta, err := c.Factor(ctx, delta)
 	if err != nil {
-		return ast.DivideTerm{}, delta, err
+		return lang.DivideTerm{}, delta, err
 	}
 
 	factorType, err := factor.ResultingType()
 	if err != nil {
-		return ast.DivideTerm{}, delta, err
+		return lang.DivideTerm{}, delta, err
 	}
 
 	_, err = leftTypeMultipliable.ResultingDivisionType(factorType)
 	if err != nil {
-		return ast.DivideTerm{}, delta, err
+		return lang.DivideTerm{}, delta, err
 	}
 
-	leftTerm := ast.NewFactorTerm(ctx, left)
-	return ast.NewDivideTerm(ctx, leftTerm, factor), delta, err
+	leftTerm := lang.NewFactorTerm(ctx, left)
+	return lang.NewDivideTerm(ctx, leftTerm, factor), delta, err
 }
 
-func (c *Parser) Factor(ctx *context.Context, delta TokenDelta) (ast.Factor, TokenDelta, error) {
+func (c *Parser) Factor(ctx *context.Context, delta TokenDelta) (lang.Factor, TokenDelta, error) {
 	if delta.token.IsInteger() {
 		return c.IntegerFactor(ctx, delta)
 	}
@@ -273,21 +273,21 @@ func (c *Parser) Factor(ctx *context.Context, delta TokenDelta) (ast.Factor, Tok
 		return c.ExpressionFactor(ctx, delta)
 	}
 
-	return ast.ExpressionFactor{}, delta, noMatchTypeError(delta)
+	return lang.ExpressionFactor{}, delta, noMatchTypeError(delta)
 }
 
-func (c *Parser) IntegerFactor(ctx *context.Context, delta TokenDelta) (ast.IntegerFactor, TokenDelta, error) {
+func (c *Parser) IntegerFactor(ctx *context.Context, delta TokenDelta) (lang.IntegerFactor, TokenDelta, error) {
 	if !delta.token.IsInteger() {
-		return ast.IntegerFactor{}, delta, unexpectedTokenTypeError(delta, tokens.Integer)
+		return lang.IntegerFactor{}, delta, unexpectedTokenTypeError(delta, tokens.Integer)
 	}
 
 	// -> 100
 	value, err := strconv.Atoi(delta.token.Content())
 	if err != nil {
-		return ast.IntegerFactor{}, delta, err
+		return lang.IntegerFactor{}, delta, err
 	}
 
-	integerFactor := ast.NewIntegerFactor(ctx, value)
+	integerFactor := lang.NewIntegerFactor(ctx, value)
 
 	// deltas
 	delta, err = c.nextToken()
@@ -298,18 +298,18 @@ func (c *Parser) IntegerFactor(ctx *context.Context, delta TokenDelta) (ast.Inte
 	return integerFactor, delta, nil
 }
 
-func (c *Parser) DecimalFactor(ctx *context.Context, delta TokenDelta) (ast.FloatFactor, TokenDelta, error) {
+func (c *Parser) DecimalFactor(ctx *context.Context, delta TokenDelta) (lang.FloatFactor, TokenDelta, error) {
 	if !delta.token.IsDecimal() {
-		return ast.FloatFactor{}, delta, unexpectedTokenTypeError(delta, tokens.Decimal)
+		return lang.FloatFactor{}, delta, unexpectedTokenTypeError(delta, tokens.Decimal)
 	}
 
 	// -> 100
 	value, err := strconv.ParseFloat(delta.token.Content(), 64)
 	if err != nil {
-		return ast.FloatFactor{}, delta, err
+		return lang.FloatFactor{}, delta, err
 	}
 
-	floatFactor := ast.NewFloatFactor(ctx, value)
+	floatFactor := lang.NewFloatFactor(ctx, value)
 
 	// deltas
 	delta, err = c.nextToken()
@@ -320,23 +320,23 @@ func (c *Parser) DecimalFactor(ctx *context.Context, delta TokenDelta) (ast.Floa
 	return floatFactor, delta, nil
 }
 
-func (c *Parser) SymbolFactor(ctx *context.Context, delta TokenDelta) (ast.SymbolFactor, TokenDelta, error) {
+func (c *Parser) SymbolFactor(ctx *context.Context, delta TokenDelta) (lang.SymbolFactor, TokenDelta, error) {
 	if !delta.token.IsIdentifier() {
-		return ast.SymbolFactor{}, delta, unexpectedTokenTypeError(delta, tokens.Identifier)
+		return lang.SymbolFactor{}, delta, unexpectedTokenTypeError(delta, tokens.Identifier)
 	}
 
 	if !ctx.SymbolExists(delta.token.Content()) {
-		return ast.SymbolFactor{}, delta, usedBeforeDeclaration(delta.token.Content())
+		return lang.SymbolFactor{}, delta, usedBeforeDeclaration(delta.token.Content())
 	}
 
 	// TODO: Checa se foi inicializado
 
 	symbol, err := ctx.RetrieveSymbol(delta.token.Content())
 	if err != nil {
-		return ast.SymbolFactor{}, delta, err
+		return lang.SymbolFactor{}, delta, err
 	}
 
-	symbolFactor := ast.NewSymbolFactor(ctx, symbol)
+	symbolFactor := lang.NewSymbolFactor(ctx, symbol)
 
 	delta, err = c.nextToken()
 	if err != nil {
@@ -346,24 +346,24 @@ func (c *Parser) SymbolFactor(ctx *context.Context, delta TokenDelta) (ast.Symbo
 	return symbolFactor, delta, nil
 }
 
-func (c *Parser) ExpressionFactor(ctx *context.Context, delta TokenDelta) (ast.ExpressionFactor, TokenDelta, error) {
+func (c *Parser) ExpressionFactor(ctx *context.Context, delta TokenDelta) (lang.ExpressionFactor, TokenDelta, error) {
 	// -> (
 	if !delta.token.IsOpenParenthesis() {
-		return ast.ExpressionFactor{}, delta, unexpectedTokenTypeError(delta, tokens.OpenParenthesis)
+		return lang.ExpressionFactor{}, delta, unexpectedTokenTypeError(delta, tokens.OpenParenthesis)
 	}
 
 	delta, err := c.nextToken()
 	if err != nil {
-		return ast.ExpressionFactor{}, delta, err
+		return lang.ExpressionFactor{}, delta, err
 	}
 
 	// -> parte de dentro
 	expr, delta, err := c.Expr(ctx, delta)
 	if err != nil {
-		return ast.ExpressionFactor{}, delta, err
+		return lang.ExpressionFactor{}, delta, err
 	}
 
-	expressionFactor := ast.NewExpressionFactor(ctx, expr)
+	expressionFactor := lang.NewExpressionFactor(ctx, expr)
 
 	// -> )
 	if !delta.token.IsCloseParenthesis() {

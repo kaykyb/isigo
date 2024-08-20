@@ -1,21 +1,20 @@
 package parser
 
 import (
-	"isigo/ast"
 	"isigo/context"
+	"isigo/lang"
 	"isigo/syntax"
 	"isigo/tokens"
 )
 
-func (c *Parser) Block(ctx *context.Context, delta TokenDelta) (ast.Block, TokenDelta, error) {
-	newContext := context.NewWithParent(ctx)
-	child, delta, err := c.VariableContext(&newContext, delta)
+func (c *Parser) Block(ctx *context.Context, delta TokenDelta) (lang.Block, TokenDelta, error) {
+	child, delta, err := c.VariableContext(ctx, delta)
 
 	if err != nil {
-		return ast.Block{}, delta, err
+		return lang.Block{}, delta, err
 	}
 
-	return ast.NewBlock(ctx, child), delta, err
+	return lang.NewBlock(ctx, child), delta, err
 }
 
 func isBlockTerminator(token tokens.Token) bool {

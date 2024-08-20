@@ -1,25 +1,25 @@
 package parser
 
 import (
-	"isigo/ast"
 	"isigo/context"
+	"isigo/lang"
 )
 
-func (c *Parser) ExecutionContext(ctx *context.Context, delta TokenDelta) (ast.ExecutionContext, TokenDelta, error) {
-	var children []ast.Node
-	var child ast.Node
+func (c *Parser) ExecutionContext(ctx *context.Context, delta TokenDelta) (lang.ExecutionContext, TokenDelta, error) {
+	var children []lang.Node
+	var child lang.Node
 	var err error
 
 	for {
 		child, delta, err = c.DeclareOrCommand(ctx, delta)
 		if err != nil {
-			return ast.ExecutionContext{}, delta, err
+			return lang.ExecutionContext{}, delta, err
 		}
 
 		children = append(children, child)
 
 		if isBlockTerminator(delta.token) {
-			return ast.NewExecutionContext(ctx, children), delta, nil
+			return lang.NewExecutionContext(ctx, children), delta, nil
 		}
 	}
 }

@@ -8,29 +8,10 @@ import (
 	"isigo/parser"
 	"log"
 	"os"
+	"os/exec"
 )
 
 func main() {
-	content, err := os.ReadFile("./input_dec.isi")
-	if err != nil {
-		log.Fatalf("Erro ao ler o arquivo: %v", err)
-	}
-
-	l := lexer.LexicalAnalysis{}
-	l.SetContent(string(content))
-
-	p := parser.New(&l)
-	ctx := context.New()
-	prog, _, err := p.Prog(&ctx)
-
-	fmt.Println(prog)
-	fmt.Println(err)
-
-	main_alt()
-}
-
-func main_alt() {
-	// Define o argumento de linha de comando
 	filePath := flag.String("file", "", "O caminho para o arquivo de entrada")
 	flag.Parse()
 
@@ -52,7 +33,68 @@ func main_alt() {
 	ctx := context.New()
 	prog, _, err := p.Prog(&ctx)
 
-	// Imprime o resultado
-	fmt.Println(prog)
-	fmt.Println(err)
+	code, err := prog.Output()
+
+	outDirPath := "./.isi_output"
+	outModuleFilePath := "./.isi_output/go.mod"
+	outFilePath := "./.isi_output/main.go"
+
+	maybeDeleteOutDir(outDirPath)
+	createOutDir(outDirPath)
+	writeArtifact(outModuleFilePath, "module isigoprogram\n\ngo 1.22\n")
+	writeArtifact(outFilePath, code)
+
+	buildOutProgram(outDirPath)
+
+	fmt.Println("Programa compilado com sucesso.")
+}
+
+func maybeDeleteOutDir(outDirPath string) {
+	if _, err := os.Stat(outDirPath); !os.IsNotExist(err) {
+		err := os.RemoveAll(outDirPath)
+		if err != nil {
+			fmt.Println("Erro ao remover o diretório:", err)
+			panic("A compilação falhou.")
+		}
+		fmt.Println("Diretório removido:", outDirPath)
+	}
+}
+
+func createOutDir(outDirPath string) {
+	err := os.Mkdir(outDirPath, 0755)
+	if err != nil {
+		fmt.Println("Erro criando diretório de saída:", err)
+		panic("A compilação falhou.")
+	}
+
+	fmt.Println("Diretório de saída criado:", outDirPath)
+}
+
+func writeArtifact(filePath string, content string) {
+	file, err := os.Create(filePath)
+	if err != nil {
+		fmt.Println("Erro criando artefato:", err)
+		panic("A compilação falhou.")
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(content)
+	if err != nil {
+		fmt.Println("Erro ao escrever no artefato:", err)
+		return
+	}
+	fmt.Println("Artefato compilado:", filePath)
+}
+
+func buildOutProgram(outputDirPath string) {
+	// Define the command and the directory
+	cmd := exec.Command("go", "build") // Replace "ls -l" with the command you want to run
+	cmd.Dir = outputDirPath            // Set the directory where the command will be run
+
+	// Run the command
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println("Erro ao compilar:", err)
+		panic("A compilação falhou.")
+	}
 }

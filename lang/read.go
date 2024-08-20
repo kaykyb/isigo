@@ -1,6 +1,7 @@
-package ast
+package lang
 
 import (
+	"fmt"
 	"isigo/context"
 	"isigo/symbol"
 )
@@ -15,4 +16,8 @@ func NewRead(ctx *context.Context, output *symbol.Symbol) Read {
 		context: ctx,
 		output:  output,
 	}
+}
+
+func (p Read) Output() (string, error) {
+	return fmt.Sprintf("scanfPanicInt(&%s)", p.output.Identifier), nil
 }

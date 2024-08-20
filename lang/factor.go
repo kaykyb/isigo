@@ -1,12 +1,14 @@
-package ast
+package lang
 
 import (
+	"fmt"
 	"isigo/context"
 	"isigo/symbol"
 	"isigo/value_types"
 )
 
 type Factor interface {
+	Node
 	ResultingType() (value_types.ValueType, error)
 }
 
@@ -27,6 +29,10 @@ func NewIntegerFactor(ctx *context.Context, value int) IntegerFactor {
 	}
 }
 
+func (p IntegerFactor) Output() (string, error) {
+	return fmt.Sprintf("%d", p.value), nil
+}
+
 // Float ----------
 type FloatFactor struct {
 	context *context.Context
@@ -42,6 +48,10 @@ func NewFloatFactor(ctx *context.Context, value float64) FloatFactor {
 		context: ctx,
 		value:   value,
 	}
+}
+
+func (p FloatFactor) Output() (string, error) {
+	return fmt.Sprintf("%f", p.value), nil
 }
 
 // Symbol ----------
@@ -61,6 +71,10 @@ func NewSymbolFactor(ctx *context.Context, symbol *symbol.Symbol) SymbolFactor {
 	}
 }
 
+func (p SymbolFactor) Output() (string, error) {
+	return fmt.Sprintf("%s", p.symbol.Identifier), nil
+}
+
 // Expr ------------
 type ExpressionFactor struct {
 	context    *context.Context
@@ -76,4 +90,13 @@ func NewExpressionFactor(ctx *context.Context, expression Expr) ExpressionFactor
 		context:    ctx,
 		expression: expression,
 	}
+}
+
+func (p ExpressionFactor) Output() (string, error) {
+	content, err := p.expression.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("(%s)", content), nil
 }

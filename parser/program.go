@@ -1,38 +1,38 @@
 package parser
 
 import (
-	"isigo/ast"
 	"isigo/context"
+	"isigo/lang"
 	"isigo/syntax"
 	"isigo/tokens"
 )
 
-func (c *Parser) Prog(ctx *context.Context) (ast.Program, TokenDelta, error) {
+func (c *Parser) Prog(ctx *context.Context) (lang.Program, TokenDelta, error) {
 	delta, err := c.nextToken()
 	if err != nil {
-		return ast.Program{}, delta, err
+		return lang.Program{}, delta, err
 	}
 
 	// -> programa
 	delta, err = c.startProg(delta)
 	if err != nil {
-		return ast.Program{}, delta, err
+		return lang.Program{}, delta, err
 	}
 
 	// Parse dos statements dentro do programa
 	progBlock, delta, err := c.Block(ctx, delta)
 	if err != nil {
-		return ast.Program{}, delta, err
+		return lang.Program{}, delta, err
 	}
 
 	// -> fimprog
 	delta, err = c.endProg(delta)
 	if err != nil {
-		return ast.Program{}, delta, err
+		return lang.Program{}, delta, err
 	}
 
 	// Sucesso
-	program := ast.NewProgram(ctx, progBlock)
+	program := lang.NewProgram(ctx, progBlock)
 
 	return program, delta, nil
 }

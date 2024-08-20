@@ -1,14 +1,18 @@
-package ast
+package lang
 
 import (
+	"fmt"
 	"isigo/compiler_error"
 	"isigo/context"
 	"isigo/value_types"
 )
 
 type Expr interface {
+	Node
 	ResultingType() (value_types.ValueType, error)
 }
+
+// ---- TERM ----
 
 type TermExpr struct {
 	context *context.Context
@@ -21,6 +25,16 @@ func NewTermExpr(ctx *context.Context, term Term) TermExpr {
 		term:    term,
 	}
 }
+
+func (p TermExpr) Output() (string, error) {
+	return p.term.Output()
+}
+
+func (n TermExpr) ResultingType() (value_types.ValueType, error) {
+	return n.term.ResultingType()
+}
+
+// ---- SUM EXPR ----
 
 type SumExpr struct {
 	context *context.Context
@@ -36,22 +50,18 @@ func NewSumExpr(ctx *context.Context, left Expr, term Term) SumExpr {
 	}
 }
 
-type SubtractExpr struct {
-	context *context.Context
-	left    Expr
-	term    Term
-}
-
-func NewSubtractExpr(ctx *context.Context, left Expr, term Term) SubtractExpr {
-	return SubtractExpr{
-		context: ctx,
-		left:    left,
-		term:    term,
+func (p SumExpr) Output() (string, error) {
+	leftContent, err := p.left.Output()
+	if err != nil {
+		return "", err
 	}
-}
 
-func (n TermExpr) ResultingType() (value_types.ValueType, error) {
-	return n.term.ResultingType()
+	rightContent, err := p.term.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s + %s", leftContent, rightContent), nil
 }
 
 func (n SumExpr) ResultingType() (value_types.ValueType, error) {
@@ -71,6 +81,36 @@ func (n SumExpr) ResultingType() (value_types.ValueType, error) {
 	}
 
 	return leftTypeSumable.ResultingSumType(termType)
+}
+
+// ---- SUBTRACT EXPR ----
+
+type SubtractExpr struct {
+	context *context.Context
+	left    Expr
+	term    Term
+}
+
+func NewSubtractExpr(ctx *context.Context, left Expr, term Term) SubtractExpr {
+	return SubtractExpr{
+		context: ctx,
+		left:    left,
+		term:    term,
+	}
+}
+
+func (p SubtractExpr) Output() (string, error) {
+	leftContent, err := p.left.Output()
+	if err != nil {
+		return "", err
+	}
+
+	rightContent, err := p.term.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s - %s", leftContent, rightContent), nil
 }
 
 func (n SubtractExpr) ResultingType() (value_types.ValueType, error) {

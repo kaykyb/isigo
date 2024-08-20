@@ -1,12 +1,14 @@
-package ast
+package lang
 
 import (
+	"fmt"
 	"isigo/compiler_error"
 	"isigo/context"
 	"isigo/value_types"
 )
 
 type Term interface {
+	Node
 	ResultingType() (value_types.ValueType, error)
 }
 
@@ -17,6 +19,15 @@ type FactorTerm struct {
 
 func NewFactorTerm(ctx *context.Context, factor Factor) FactorTerm {
 	return FactorTerm{context: ctx, factor: factor}
+}
+
+func (p FactorTerm) Output() (string, error) {
+	content, err := p.factor.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s", content), nil
 }
 
 type MultiplyTerm struct {
@@ -33,6 +44,20 @@ func NewMultiplyTerm(ctx *context.Context, left Term, factor Factor) MultiplyTer
 	}
 }
 
+func (p MultiplyTerm) Output() (string, error) {
+	leftContent, err := p.left.Output()
+	if err != nil {
+		return "", err
+	}
+
+	rightContent, err := p.factor.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s * %s", leftContent, rightContent), nil
+}
+
 type DivideTerm struct {
 	context *context.Context
 	left    Term
@@ -45,6 +70,20 @@ func NewDivideTerm(ctx *context.Context, left Term, factor Factor) DivideTerm {
 		left:    left,
 		factor:  factor,
 	}
+}
+
+func (p DivideTerm) Output() (string, error) {
+	leftContent, err := p.left.Output()
+	if err != nil {
+		return "", err
+	}
+
+	rightContent, err := p.factor.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s / %s", leftContent, rightContent), nil
 }
 
 func (n FactorTerm) ResultingType() (value_types.ValueType, error) {

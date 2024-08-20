@@ -28,11 +28,3 @@ func (c *Parser) nextToken() (TokenDelta, error) {
 		position: position,
 	}, err
 }
-
-func (c *Parser) NextToken() (TokenDelta, error) {
-	token, position, err := c.lexicalAnalysis.NextToken()
-	return TokenDelta{
-		token:    token,
-		position: position,
-	}, err
-}

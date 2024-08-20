@@ -1,4 +1,4 @@
-package ast
+package lang
 
 import (
 	"isigo/context"
@@ -14,4 +14,13 @@ func NewBlock(ctx *context.Context, child Node) Block {
 		context: ctx,
 		child:   child,
 	}
+}
+
+func (p Block) Output() (string, error) {
+	content, err := p.child.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return content, nil
 }
