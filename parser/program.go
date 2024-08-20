@@ -1,0 +1,62 @@
+package parser
+
+import (
+	"isigo/ast"
+	"isigo/context"
+	"isigo/syntax"
+	"isigo/tokens"
+)
+
+func (c *Parser) Prog(ctx *context.Context) (ast.Program, TokenDelta, error) {
+	delta, err := c.nextToken()
+	if err != nil {
+		return ast.Program{}, delta, err
+	}
+
+	// -> programa
+	delta, err = c.startProg(delta)
+	if err != nil {
+		return ast.Program{}, delta, err
+	}
+
+	// Parse dos statements dentro do programa
+	progBlock, delta, err := c.Block(ctx, delta)
+	if err != nil {
+		return ast.Program{}, delta, err
+	}
+
+	// -> fimprog
+	delta, err = c.endProg(delta)
+	if err != nil {
+		return ast.Program{}, delta, err
+	}
+
+	// Sucesso
+	program := ast.NewProgram(ctx, progBlock)
+
+	return program, delta, nil
+}
+
+func (c *Parser) startProg(delta TokenDelta) (TokenDelta, error) {
+	if !delta.token.IsReservedWord() {
+		return TokenDelta{}, unexpectedTokenTypeError(delta, tokens.ReservedWord)
+	}
+
+	if !delta.token.Is(syntax.Program) {
+		return TokenDelta{}, unexpectedContentError(delta, syntax.Program)
+	}
+
+	return c.nextToken()
+}
+
+func (c *Parser) endProg(delta TokenDelta) (TokenDelta, error) {
+	if !delta.token.IsReservedWord() {
+		return delta, unexpectedTokenTypeError(delta, tokens.ReservedWord)
+	}
+
+	if !delta.token.Is(syntax.EndProgram) {
+		return delta, unexpectedContentError(delta, syntax.EndProgram)
+	}
+
+	return c.nextToken()
+}

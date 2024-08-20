@@ -1,0 +1,20 @@
+programa
+    declare a,b,c,d.
+    escreva("Programa Teste").
+    escreva ("Digite A").
+    leia (a).
+    escreva ("Digite B").
+    leia (b).
+    if (a<b)
+    {
+        c := a + b.
+    }else
+    {
+        c := a - b.
+    }
+    escreva ("C e igual a ").
+    escreva (c).
+    d := c * a + b.
+    escreva ("D e igual a ").
+    escreva (d).
+fimprog.
