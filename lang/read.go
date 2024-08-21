@@ -22,10 +22,10 @@ func NewRead(ctx *context.Context, output *symbol.Symbol) Read {
 func (p Read) Output() (string, error) {
 	switch p.output.Type {
 	case value_types.IntegerValueTypeEntity:
-		return fmt.Sprintf("scanfPanicInt(&%s)", p.output.Identifier), nil
+		return fmt.Sprintf("%s = scanfPanicInt()", p.output.Identifier), nil
 	case value_types.FloatValueTypeEntity:
-		return fmt.Sprintf("scanfPanicFloat(&%s)", p.output.Identifier), nil
+		return fmt.Sprintf("%s = scanfPanicFloat()", p.output.Identifier), nil
 	default:
-		return fmt.Sprintf("scanfPanicString(&%s)", p.output.Identifier), nil
+		return fmt.Sprintf("%s = scanfPanicString()", p.output.Identifier), nil
 	}
 }

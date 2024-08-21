@@ -22,28 +22,43 @@ func wrappedProgram(content string) string {
 	return fmt.Sprintf(`package main
 
 import (
-	"fmt"
+	"bufio"
+	"os"
+	"strconv"
 )
 
-func scanfPanicInt(to *int) {
-	_, err := fmt.Scanf("%%d", to)
+func scanLine() string {
+	reader := bufio.NewReader(os.Stdin)
+	line, err := reader.ReadString('\n')
 	if err != nil {
 		panic(err)
 	}
+
+	return line
 }
 
-func scanfPanicFloat(to *float64) {
-	_, err := fmt.Scanf("%%f", to)
-	if err != nil {
+func scanfPanicInt() int64 {
+	fval, err := strconv.ParseInt(scanLine(), 10, 64)
+	
+	if err != nil { 
 		panic(err)
 	}
+
+	return fval
 }
 
-func scanfPanicString(to *string) {
-	_, err := fmt.Scanf("%%s", to)
-	if err != nil {
+func scanfPanicFloat() float64 {
+	fval, err := strconv.ParseFloat(scanLine(), 64)
+	
+	if err != nil { 
 		panic(err)
 	}
+
+	return fval
+}
+
+func scanfPanicString() string {
+	return scanLine()
 }
 
 func main() {

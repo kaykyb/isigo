@@ -63,5 +63,5 @@ func (v integerValueType) CanAssign(a ValueType) bool {
 }
 
 func (v integerValueType) Output() string {
-	return "int"
+	return "int64"
 }
