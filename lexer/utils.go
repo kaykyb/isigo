@@ -49,10 +49,6 @@ func IsColon(c rune) bool {
 	return c == ':'
 }
 
-func IsEqualSign(c rune) bool {
-	return c == '='
-}
-
 func IsOpenParenthesis(c rune) bool {
 	return c == '('
 }
