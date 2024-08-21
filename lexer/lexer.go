@@ -212,10 +212,14 @@ func (l *LexicalAnalysis) consumeWord() (ConsumptionDelta, *tokens.Token, error)
 		runesConsumed:   wDelta,
 	}
 
-	token := tokens.NewIdentifier(word)
+	var token tokens.Token
 
 	if IsReservedWord(word) {
 		token = tokens.NewReservedWord(word)
+	} else if IsTypeT(word) {
+		token = tokens.NewTypeT(word)
+	} else {
+		token = tokens.NewIdentifier(word)
 	}
 
 	return delta, &token, nil

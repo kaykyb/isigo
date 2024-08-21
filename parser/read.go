@@ -69,6 +69,11 @@ func (c *Parser) Read(ctx *context.Context, delta TokenDelta) (lang.Read, TokenD
 		return lang.Read{}, delta, unexpectedTokenTypeError(delta, tokens.StatementTerminator)
 	}
 
+	err = ctx.AssignSymbol(identifier)
+	if err != nil {
+		return lang.Read{}, delta, err
+	}
+
 	// delta
 	delta, err = c.nextToken()
 	if err != nil {

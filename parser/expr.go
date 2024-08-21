@@ -340,11 +340,13 @@ func (c *Parser) SymbolFactor(ctx *context.Context, delta TokenDelta) (lang.Symb
 		return lang.SymbolFactor{}, delta, usedBeforeDeclaration(delta.token.Content())
 	}
 
-	// TODO: Checa se foi inicializado
-
 	symbol, err := ctx.RetrieveSymbol(delta.token.Content())
 	if err != nil {
 		return lang.SymbolFactor{}, delta, err
+	}
+
+	if !symbol.Assigned {
+		return lang.SymbolFactor{}, delta, usedBeforeAssignment(symbol.Identifier)
 	}
 
 	symbolFactor := lang.NewSymbolFactor(ctx, symbol)

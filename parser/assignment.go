@@ -2,6 +2,7 @@ package parser
 
 import (
 	"isigo/context"
+	"isigo/failure"
 	"isigo/lang"
 	"isigo/tokens"
 )
@@ -49,6 +50,20 @@ func (c *Parser) Assignment(ctx *context.Context, delta TokenDelta) (lang.Assign
 	// -> .
 	if !delta.token.IsStatementTerminator() {
 		return lang.Assignment{}, delta, unexpectedTokenTypeError(delta, tokens.StatementTerminator)
+	}
+
+	exprType, err := expr.ResultingType()
+	if err != nil {
+		return lang.Assignment{}, delta, err
+	}
+
+	if !symbolTo.Type.CanAssign(exprType) {
+		return lang.Assignment{}, delta, failure.SymbolTypeDiffers(identifier, symbolTo.Type.Name(), exprType.Name())
+	}
+
+	err = ctx.AssignSymbol(identifier)
+	if err != nil {
+		return lang.Assignment{}, TokenDelta{}, err
 	}
 
 	// delta

@@ -1,6 +1,9 @@
 package symbol
 
-import "fmt"
+import (
+	"fmt"
+	"isigo/failure"
+)
 
 type Table struct {
 	symbols map[string]*Symbol
@@ -27,5 +30,15 @@ func (s *Table) PutNew(identifier string, symbol *Symbol) error {
 	}
 
 	s.symbols[identifier] = symbol
+	return nil
+}
+
+func (s *Table) ValidateSymbolUsage() error {
+	for _, entity := range s.symbols {
+		if !entity.Assigned {
+			return failure.NeverUsed(entity.Identifier)
+		}
+	}
+
 	return nil
 }

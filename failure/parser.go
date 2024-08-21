@@ -8,6 +8,14 @@ func UsedBeforeDeclaration(id string) error {
 	return SyntaxErrorf("O símbolo '%s' foi usado antes de ser declarado.", id)
 }
 
+func UsedBeforeAssignment(id string) error {
+	return SyntaxErrorf("O símbolo '%s' foi usado antes de ser inicializado.", id)
+}
+
+func NeverUsed(id string) error {
+	return SyntaxErrorf("O símbolo '%s' foi declarado mas nunca foi usado.", id)
+}
+
 func UnexpectedTokenError(ttype string) error {
 	return SyntaxErrorf("'%s' não é esperado neste contexto.", ttype)
 }

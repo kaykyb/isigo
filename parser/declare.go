@@ -5,6 +5,7 @@ import (
 	"isigo/lang"
 	"isigo/syntax"
 	"isigo/tokens"
+	"isigo/value_types"
 )
 
 func (c *Parser) Declare(ctx *context.Context, delta TokenDelta) (lang.Declare, TokenDelta, error) {
@@ -55,14 +56,25 @@ func (c *Parser) declarations(ctx *context.Context, delta TokenDelta, current []
 		return current, delta, alreadyDeclared(identifier)
 	}
 
-	if _, err := ctx.CreateSymbol(identifier); err != nil {
+	// Tipo
+	var err error
+	delta, err = c.nextToken()
+	if err != nil {
 		return current, delta, err
 	}
 
-	current = append(current, lang.NewVariable(ctx, identifier))
+	if !delta.token.IsTypeT() {
+		return current, delta, unexpectedTokenTypeError(delta, tokens.TypeT)
+	}
+
+	typeEntity := value_types.TypeEntityForTypeT(delta.token.Content())
+	if _, err := ctx.CreateSymbol(identifier, typeEntity); err != nil {
+		return current, delta, err
+	}
+
+	current = append(current, lang.NewVariable(ctx, identifier, typeEntity))
 
 	// Tenta puxar o próximo separator
-	var err error
 	delta, err = c.nextToken()
 	if err != nil {
 		return current, delta, err

@@ -13,6 +13,10 @@ func usedBeforeDeclaration(identifier string) error {
 	return failure.UsedBeforeDeclaration(identifier)
 }
 
+func usedBeforeAssignment(identifier string) error {
+	return failure.UsedBeforeAssignment(identifier)
+}
+
 func noMatchTypeError(delta TokenDelta) error {
 	return failure.UnexpectedTokenError(delta.token.FriendlyString())
 }

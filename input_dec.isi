@@ -1,6 +1,5 @@
 programa
-    declare a.
+    declare a decimal.
     leia(a).
-    a := 8 / 2 * (2 + 2) + a + 8 / 2 * (2 + 2).
     escreva(a).
 fimprog.

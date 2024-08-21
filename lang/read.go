@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"isigo/context"
 	"isigo/symbol"
+	"isigo/value_types"
 )
 
 type Read struct {
@@ -19,5 +20,12 @@ func NewRead(ctx *context.Context, output *symbol.Symbol) Read {
 }
 
 func (p Read) Output() (string, error) {
-	return fmt.Sprintf("scanfPanicInt(&%s)", p.output.Identifier), nil
+	switch p.output.Type {
+	case value_types.IntegerValueTypeEntity:
+		return fmt.Sprintf("scanfPanicInt(&%s)", p.output.Identifier), nil
+	case value_types.FloatValueTypeEntity:
+		return fmt.Sprintf("scanfPanicFloat(&%s)", p.output.Identifier), nil
+	default:
+		return fmt.Sprintf("scanfPanicInt(&%s)", p.output.Identifier), nil
+	}
 }

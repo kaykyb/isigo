@@ -3,15 +3,14 @@ package lang
 import (
 	"fmt"
 	"isigo/context"
-	"isigo/symbol"
 )
 
 type Write struct {
 	context *context.Context
-	output  *symbol.Symbol
+	output  Expr
 }
 
-func NewWrite(ctx *context.Context, output *symbol.Symbol) Write {
+func NewWrite(ctx *context.Context, output Expr) Write {
 	return Write{
 		context: ctx,
 		output:  output,
@@ -19,5 +18,10 @@ func NewWrite(ctx *context.Context, output *symbol.Symbol) Write {
 }
 
 func (p Write) Output() (string, error) {
-	return fmt.Sprintf("print(%s)", p.output.Identifier), nil
+	content, err := p.output.Output()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("println(%s)", content), nil
 }

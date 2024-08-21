@@ -53,12 +53,26 @@ func (c *Context) RetrieveSymbol(identifier string) (*symbol.Symbol, error) {
 	return nil, fmt.Errorf("O símbolo %s não existe no contexto atual", identifier)
 }
 
-func (c *Context) CreateSymbol(identifier string) (*symbol.Symbol, error) {
+func (c *Context) CreateSymbol(identifier string, typeT value_types.ValueType) (*symbol.Symbol, error) {
 	symbolEntity := &symbol.Symbol{
 		Identifier: identifier,
-		Type:       value_types.IntegerValueTypeEntity,
+		Type:       typeT,
 	}
 
 	err := c.symbolTable.PutNew(identifier, symbolEntity)
 	return symbolEntity, err
+}
+
+func (c *Context) AssignSymbol(identifier string) error {
+	symbolEntity, err := c.RetrieveSymbol(identifier)
+	if err != nil {
+		return err
+	}
+
+	symbolEntity.Assigned = true
+	return nil
+}
+
+func (c *Context) ValidateSymbolUsage() error {
+	return c.symbolTable.ValidateSymbolUsage()
 }

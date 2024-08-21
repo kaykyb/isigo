@@ -28,33 +28,18 @@ func (c *Parser) Write(ctx *context.Context, delta TokenDelta) (lang.Write, Toke
 		return lang.Write{}, delta, unexpectedTokenTypeError(delta, tokens.OpenParenthesis)
 	}
 
-	// -> ID
+	// -> Expr
 	delta, err = c.nextToken()
 	if err != nil {
 		return lang.Write{}, delta, err
 	}
 
-	// Precisa ter um e apenas um identificador
-	if !delta.token.IsIdentifier() {
-		return lang.Write{}, delta, unexpectedTokenTypeError(delta, tokens.Identifier)
-	}
-
-	identifier := delta.token.Content()
-	if !ctx.SymbolExists(identifier) {
-		return lang.Write{}, delta, usedBeforeDeclaration(identifier)
-	}
-
-	symbol, err := ctx.RetrieveSymbol(identifier)
+	expr, delta, err := c.Expr(ctx, delta)
 	if err != nil {
 		return lang.Write{}, delta, err
 	}
 
 	// -> )
-	delta, err = c.nextToken()
-	if err != nil {
-		return lang.Write{}, delta, err
-	}
-
 	if !delta.token.IsCloseParenthesis() {
 		return lang.Write{}, delta, unexpectedTokenTypeError(delta, tokens.CloseParenthesis)
 	}
@@ -75,5 +60,5 @@ func (c *Parser) Write(ctx *context.Context, delta TokenDelta) (lang.Write, Toke
 		return lang.Write{}, delta, err
 	}
 
-	return lang.NewWrite(ctx, symbol), delta, nil
+	return lang.NewWrite(ctx, expr), delta, nil
 }

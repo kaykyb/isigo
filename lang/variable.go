@@ -11,9 +11,10 @@ type Variable struct {
 	variableType value_types.ValueType
 }
 
-func NewVariable(ctx *context.Context, identifier string) Variable {
+func NewVariable(ctx *context.Context, identifier string, variableType value_types.ValueType) Variable {
 	return Variable{
-		context:    ctx,
-		identifier: identifier,
+		context:      ctx,
+		identifier:   identifier,
+		variableType: variableType,
 	}
 }

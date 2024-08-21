@@ -13,4 +13,7 @@ const (
 	Minus      = "-"
 	Multiply   = "*"
 	Divide     = "/"
+	IntegerT   = "inteiro"
+	FloatT     = "decimal"
+	StringT    = "string"
 )

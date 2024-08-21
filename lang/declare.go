@@ -21,7 +21,7 @@ func NewDeclare(ctx *context.Context, variables []Variable) Declare {
 func (p Declare) Output() (string, error) {
 	var lines []string
 	for _, variable := range p.variables {
-		lines = append(lines, fmt.Sprintf("var %s int", variable.identifier))
+		lines = append(lines, fmt.Sprintf("var %s %s", variable.identifier, variable.variableType.Output()))
 	}
 
 	content := strings.Join(lines, "\n")

@@ -79,7 +79,16 @@ func IsStringDelimiter(c rune) bool {
 
 func IsReservedWord(s string) bool {
 	switch s {
-	case syntax.Program, syntax.EndProgram, syntax.Declare, syntax.If, syntax.Then, syntax.Else, "leia", "escreva":
+	case syntax.Program, syntax.EndProgram, syntax.Declare, syntax.If, syntax.Then, syntax.Else, syntax.Read, syntax.Write:
+		return true
+	default:
+		return false
+	}
+}
+
+func IsTypeT(s string) bool {
+	switch s {
+	case syntax.IntegerT, syntax.FloatT:
 		return true
 	default:
 		return false

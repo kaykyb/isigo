@@ -22,6 +22,7 @@ const (
 
 	Identifier
 	ReservedWord
+	TypeT
 )
 
 type Token struct {
@@ -62,6 +63,7 @@ func FriendlyString(ttype Type) string {
 
 		Identifier:   "identificador",
 		ReservedWord: "palavra reserva",
+		TypeT:        "tipo",
 	}
 
 	return friendlyStringMap[ttype]
@@ -80,6 +82,10 @@ func (t *Token) Is(content string) bool {
 
 func (t *Token) IsReservedWord() bool {
 	return t.internalType == ReservedWord
+}
+
+func (t *Token) IsTypeT() bool {
+	return t.internalType == TypeT
 }
 
 func (t *Token) IsIdentifier() bool {
