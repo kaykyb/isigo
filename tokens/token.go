@@ -104,6 +104,10 @@ func (t *Token) IsDecimal() bool {
 	return t.internalType == Decimal
 }
 
+func (t *Token) IsString() bool {
+	return t.internalType == String
+}
+
 func (t *Token) IsOperator() bool {
 	return t.internalType == Operator
 }

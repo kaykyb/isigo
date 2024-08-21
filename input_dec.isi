@@ -1,5 +1,5 @@
 programa
-    declare a decimal.
+    declare a texto.
     leia(a).
     escreva(a).
 fimprog.

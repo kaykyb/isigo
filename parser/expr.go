@@ -331,6 +331,23 @@ func (c *Parser) DecimalFactor(ctx *context.Context, delta TokenDelta) (lang.Flo
 	return floatFactor, delta, nil
 }
 
+func (c *Parser) StringFactor(ctx *context.Context, delta TokenDelta) (lang.StringFactor, TokenDelta, error) {
+	if !delta.token.IsString() {
+		return lang.StringFactor{}, delta, unexpectedTokenTypeError(delta, tokens.String)
+	}
+
+	// -> "texto"
+	stringFactor := lang.NewStringFactor(ctx, delta.token.Content())
+
+	// deltas
+	delta, err := c.nextToken()
+	if err != nil {
+		return stringFactor, delta, err
+	}
+
+	return stringFactor, delta, nil
+}
+
 func (c *Parser) SymbolFactor(ctx *context.Context, delta TokenDelta) (lang.SymbolFactor, TokenDelta, error) {
 	if !delta.token.IsIdentifier() {
 		return lang.SymbolFactor{}, delta, unexpectedTokenTypeError(delta, tokens.Identifier)

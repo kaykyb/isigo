@@ -54,6 +54,27 @@ func (p FloatFactor) Output() (string, error) {
 	return fmt.Sprintf("%f", p.value), nil
 }
 
+// String ----------
+type StringFactor struct {
+	context *context.Context
+	value   string
+}
+
+func (n StringFactor) ResultingType() (value_types.ValueType, error) {
+	return value_types.StringValueTypeEntity, nil
+}
+
+func NewStringFactor(ctx *context.Context, value string) StringFactor {
+	return StringFactor{
+		context: ctx,
+		value:   value,
+	}
+}
+
+func (p StringFactor) Output() (string, error) {
+	return fmt.Sprintf("\"%s\"", p.value), nil
+}
+
 // Symbol ----------
 type SymbolFactor struct {
 	context *context.Context

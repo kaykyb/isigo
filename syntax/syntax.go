@@ -15,5 +15,5 @@ const (
 	Divide     = "/"
 	IntegerT   = "inteiro"
 	FloatT     = "decimal"
-	StringT    = "string"
+	StringT    = "texto"
 )

@@ -39,6 +39,12 @@ func scanfPanicFloat(to *float64) {
 	}
 }
 
+func scanfPanicString(to *string) {
+	_, err := fmt.Scanf("%%s", to)
+	if err != nil {
+		panic(err)
+	}
+}
 
 func main() {
 %s

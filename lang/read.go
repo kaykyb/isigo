@@ -26,6 +26,6 @@ func (p Read) Output() (string, error) {
 	case value_types.FloatValueTypeEntity:
 		return fmt.Sprintf("scanfPanicFloat(&%s)", p.output.Identifier), nil
 	default:
-		return fmt.Sprintf("scanfPanicInt(&%s)", p.output.Identifier), nil
+		return fmt.Sprintf("scanfPanicString(&%s)", p.output.Identifier), nil
 	}
 }

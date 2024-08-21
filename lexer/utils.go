@@ -88,7 +88,7 @@ func IsReservedWord(s string) bool {
 
 func IsTypeT(s string) bool {
 	switch s {
-	case syntax.IntegerT, syntax.FloatT:
+	case syntax.IntegerT, syntax.FloatT, syntax.StringT:
 		return true
 	default:
 		return false
