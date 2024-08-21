@@ -34,7 +34,7 @@ func scanLine() string {
 		panic(err)
 	}
 
-	return line
+	return line[:len(line)-1]
 }
 
 func scanfPanicInt() int64 {
