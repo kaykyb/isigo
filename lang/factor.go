@@ -33,6 +33,10 @@ func (p IntegerFactor) Output() (string, error) {
 	return fmt.Sprintf("%d", p.value), nil
 }
 
+func (p IntegerFactor) Eval(ctx *context.Context) (any, error) {
+	return p.value, nil
+}
+
 // Float ----------
 type FloatFactor struct {
 	context *context.Context
@@ -52,6 +56,10 @@ func NewFloatFactor(ctx *context.Context, value float64) FloatFactor {
 
 func (p FloatFactor) Output() (string, error) {
 	return fmt.Sprintf("%f", p.value), nil
+}
+
+func (p FloatFactor) Eval(ctx *context.Context) (any, error) {
+	return p.value, nil
 }
 
 // String ----------
@@ -75,6 +83,10 @@ func (p StringFactor) Output() (string, error) {
 	return fmt.Sprintf("\"%s\"", p.value), nil
 }
 
+func (p StringFactor) Eval(ctx *context.Context) (any, error) {
+	return p.value, nil
+}
+
 // Symbol ----------
 type SymbolFactor struct {
 	context *context.Context
@@ -94,6 +106,10 @@ func NewSymbolFactor(ctx *context.Context, symbol *symbol.Symbol) SymbolFactor {
 
 func (p SymbolFactor) Output() (string, error) {
 	return fmt.Sprintf("%s", p.symbol.Identifier), nil
+}
+
+func (p SymbolFactor) Eval(ctx *context.Context) (any, error) {
+	return p.symbol.RuntimeValue(), nil
 }
 
 // Expr ------------
@@ -120,4 +136,8 @@ func (p ExpressionFactor) Output() (string, error) {
 	}
 
 	return fmt.Sprintf("(%s)", content), nil
+}
+
+func (p ExpressionFactor) Eval(ctx *context.Context) (any, error) {
+	return p.expression.Eval(ctx)
 }

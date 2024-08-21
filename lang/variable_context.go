@@ -32,3 +32,13 @@ func (p VariableContext) Output() (string, error) {
 
 	return fmt.Sprintf("%s\n%s", declareContent, childContent), nil
 }
+
+func (p VariableContext) Eval(ctx *context.Context) (any, error) {
+	newContext := context.NewWithParent(ctx)
+	_, err := p.declare.Eval(&newContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return p.child.Eval(&newContext)
+}

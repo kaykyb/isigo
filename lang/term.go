@@ -30,6 +30,10 @@ func (p FactorTerm) Output() (string, error) {
 	return fmt.Sprintf("%s", content), nil
 }
 
+func (p FactorTerm) Eval(ctx *context.Context) (any, error) {
+	return p.factor.Eval(ctx)
+}
+
 type MultiplyTerm struct {
 	context *context.Context
 	left    Term
@@ -58,6 +62,41 @@ func (p MultiplyTerm) Output() (string, error) {
 	return fmt.Sprintf("%s * %s", leftContent, rightContent), nil
 }
 
+func (p MultiplyTerm) Eval(ctx *context.Context) (any, error) {
+	leftEval, err := p.left.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	factorEval, err := p.factor.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	switch left := leftEval.(type) {
+	case int:
+		switch factor := factorEval.(type) {
+		case int:
+			return left * factor, nil
+		case float64:
+			return float64(left) * factor, nil
+		default:
+			return nil, fmt.Errorf("Não é possível multiplicar: %T", factorEval)
+		}
+	case float64:
+		switch factor := factorEval.(type) {
+		case int:
+			return left * float64(factor), nil
+		case float64:
+			return left * factor, nil
+		default:
+			return nil, fmt.Errorf("Não é possível multiplicar: %T", factorEval)
+		}
+	default:
+		return nil, fmt.Errorf("Não é possível multiplicar: %T", leftEval)
+	}
+}
+
 type DivideTerm struct {
 	context *context.Context
 	left    Term
@@ -84,6 +123,41 @@ func (p DivideTerm) Output() (string, error) {
 	}
 
 	return fmt.Sprintf("%s / %s", leftContent, rightContent), nil
+}
+
+func (p DivideTerm) Eval(ctx *context.Context) (any, error) {
+	leftEval, err := p.left.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	factorEval, err := p.factor.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	switch left := leftEval.(type) {
+	case int:
+		switch factor := factorEval.(type) {
+		case int:
+			return left / factor, nil
+		case float64:
+			return float64(left) / factor, nil
+		default:
+			return nil, fmt.Errorf("Não é possível dividir: %T", factorEval)
+		}
+	case float64:
+		switch factor := factorEval.(type) {
+		case int:
+			return left / float64(factor), nil
+		case float64:
+			return left / factor, nil
+		default:
+			return nil, fmt.Errorf("Não é possível dividir: %T", factorEval)
+		}
+	default:
+		return nil, fmt.Errorf("Não é possível dividir: %T", leftEval)
+	}
 }
 
 func (n FactorTerm) ResultingType() (value_types.ValueType, error) {

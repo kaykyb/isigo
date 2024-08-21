@@ -1,0 +1,5 @@
+programa
+    declare a decimal.
+    a := 5.4.
+    escreva(a).
+fimprog.

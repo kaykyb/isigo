@@ -23,6 +23,7 @@ func wrappedProgram(content string) string {
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -74,4 +75,8 @@ func (p Program) Output() (string, error) {
 	}
 
 	return wrappedProgram(common.Indent(content)), nil
+}
+
+func (p Program) Eval(ctx *context.Context) (any, error) {
+	return p.child.Eval(ctx)
 }

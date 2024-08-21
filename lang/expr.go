@@ -30,6 +30,10 @@ func (p TermExpr) Output() (string, error) {
 	return p.term.Output()
 }
 
+func (p TermExpr) Eval(ctx *context.Context) (any, error) {
+	return p.term.Eval(ctx)
+}
+
 func (n TermExpr) ResultingType() (value_types.ValueType, error) {
 	return n.term.ResultingType()
 }
@@ -62,6 +66,41 @@ func (p SumExpr) Output() (string, error) {
 	}
 
 	return fmt.Sprintf("%s + %s", leftContent, rightContent), nil
+}
+
+func (p SumExpr) Eval(ctx *context.Context) (any, error) {
+	leftEval, err := p.left.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	termEval, err := p.term.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	switch left := leftEval.(type) {
+	case int:
+		switch factor := termEval.(type) {
+		case int:
+			return left + factor, nil
+		case float64:
+			return float64(left) + factor, nil
+		default:
+			return nil, fmt.Errorf("Não é possível somar: %T", termEval)
+		}
+	case float64:
+		switch factor := termEval.(type) {
+		case int:
+			return left + float64(factor), nil
+		case float64:
+			return left + factor, nil
+		default:
+			return nil, fmt.Errorf("Não é possível somar: %T", termEval)
+		}
+	default:
+		return nil, fmt.Errorf("Não é possível somar: %T", leftEval)
+	}
 }
 
 func (n SumExpr) ResultingType() (value_types.ValueType, error) {
@@ -111,6 +150,41 @@ func (p SubtractExpr) Output() (string, error) {
 	}
 
 	return fmt.Sprintf("%s - %s", leftContent, rightContent), nil
+}
+
+func (p SubtractExpr) Eval(ctx *context.Context) (any, error) {
+	leftEval, err := p.left.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	termEval, err := p.term.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	switch left := leftEval.(type) {
+	case int:
+		switch factor := termEval.(type) {
+		case int:
+			return left + factor, nil
+		case float64:
+			return float64(left) + factor, nil
+		default:
+			return nil, fmt.Errorf("Não é possível subtrair: %T", termEval)
+		}
+	case float64:
+		switch factor := termEval.(type) {
+		case int:
+			return left + float64(factor), nil
+		case float64:
+			return left + factor, nil
+		default:
+			return nil, fmt.Errorf("Não é possível subtrair: %T", termEval)
+		}
+	default:
+		return nil, fmt.Errorf("Não é possível subtrair: %T", leftEval)
+	}
 }
 
 func (n SubtractExpr) ResultingType() (value_types.ValueType, error) {

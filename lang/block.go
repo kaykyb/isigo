@@ -24,3 +24,7 @@ func (p Block) Output() (string, error) {
 
 	return content, nil
 }
+
+func (p Block) Eval(ctx *context.Context) (any, error) {
+	return p.child.Eval(ctx)
+}

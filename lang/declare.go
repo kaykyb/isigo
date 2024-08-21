@@ -27,3 +27,14 @@ func (p Declare) Output() (string, error) {
 	content := strings.Join(lines, "\n")
 	return content, nil
 }
+
+func (p Declare) Eval(ctx *context.Context) (any, error) {
+	for _, variable := range p.variables {
+		_, err := ctx.CreateSymbol(variable.identifier, variable.variableType)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return nil, nil
+}

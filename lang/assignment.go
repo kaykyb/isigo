@@ -28,3 +28,13 @@ func (p Assignment) Output() (string, error) {
 
 	return fmt.Sprintf("%s = %s", p.to.Identifier, exprContent), nil
 }
+
+func (p Assignment) Eval(ctx *context.Context) (any, error) {
+	exprVal, err := p.expr.Eval(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	p.to.AssignRuntimeValue(exprVal)
+	return nil, nil
+}

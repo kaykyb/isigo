@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"isigo/context"
+	"isigo/lang"
 	"isigo/lexer"
 	"isigo/parser"
 	"log"
@@ -12,8 +13,14 @@ import (
 )
 
 func main() {
+	command := flag.String("command", "build", "Comando a ser executado: build ou run")
 	filePath := flag.String("file", "", "O caminho para o arquivo de entrada")
 	flag.Parse()
+
+	if *command == "" || (*command != "build" && *command != "run") {
+		fmt.Println("Uso: isigo -command=<build|run> -file=<caminho_para_arquivo>")
+		os.Exit(1)
+	}
 
 	if *filePath == "" {
 		fmt.Println("Uso: isigo -file=<caminho_para_arquivo>")
@@ -40,7 +47,32 @@ func main() {
 		log.Fatalf("Erro: [Linha %d, Coluna %d]: %v", delta.Position().Line+1, delta.Position().Column+1, err)
 	}
 
+	if *command == "build" {
+		build(prog)
+		return
+	}
+
+	run(prog)
+}
+
+func run(prog lang.Program) {
+	newContext := context.New()
+	val, err := prog.Eval(&newContext)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("-> ", val)
+	fmt.Println("[ Programa encerrado. ]")
+}
+
+func build(prog lang.Program) {
 	code, err := prog.Output()
+
+	if err != nil {
+		panic(err)
+	}
 
 	outDirPath := "./.isi_output"
 	outModuleFilePath := "./.isi_output/go.mod"

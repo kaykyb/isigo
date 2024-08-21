@@ -23,5 +23,16 @@ func (p Write) Output() (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("println(%s)", content), nil
+	return fmt.Sprintf("fmt.Println(%s)", content), nil
+}
+
+func (p Write) Eval(ctx *context.Context) (any, error) {
+	exprVal, err := p.output.Eval(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(exprVal)
+
+	return nil, nil
 }

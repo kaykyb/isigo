@@ -31,3 +31,14 @@ func (p ExecutionContext) Output() (string, error) {
 	content := strings.Join(lines, "\n")
 	return content, nil
 }
+
+func (p ExecutionContext) Eval(ctx *context.Context) (lastReturnVal any, err error) {
+	for _, child := range p.children {
+		lastReturnVal, err = child.Eval(ctx)
+		if err != nil {
+			break
+		}
+	}
+
+	return lastReturnVal, err
+}
