@@ -105,7 +105,7 @@ func NewSymbolFactor(ctx *context.Context, symbol *symbol.Symbol) SymbolFactor {
 }
 
 func (p SymbolFactor) Output() (string, error) {
-	return fmt.Sprintf("%s", p.symbol.Identifier), nil
+	return p.symbol.Identifier, nil
 }
 
 func (p SymbolFactor) Eval(ctx *context.Context) (any, error) {
