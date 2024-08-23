@@ -5,6 +5,7 @@ import (
 	"isigo/lang"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 func Build(prog lang.Program) {
@@ -19,7 +20,7 @@ func Build(prog lang.Program) {
 	outFilePath := "./.isi_output/main.go"
 
 	maybeDeleteOutDir(outDirPath)
-	createOutDir(outDirPath)
+	copyBaseArtifact("_artifact", outDirPath)
 	writeArtifact(outModuleFilePath, "module isigoprogram\n\ngo 1.22\n")
 	writeArtifact(outFilePath, code)
 
@@ -39,14 +40,20 @@ func maybeDeleteOutDir(outDirPath string) {
 	}
 }
 
-func createOutDir(outDirPath string) {
-	err := os.Mkdir(outDirPath, 0755)
-	if err != nil {
-		fmt.Println("Erro criando diretório de saída:", err)
-		panic("A compilação falhou.")
+func copyBaseArtifact(srcDirPath, outDirPath string) {
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("powershell", "Copy-Item", "-Path", srcDirPath, "-Destination", outDirPath, "-Recurse")
+	} else {
+		cmd = exec.Command("cp", "-r", srcDirPath, outDirPath)
 	}
 
-	fmt.Println("Diretório de saída criado:", outDirPath)
+	err := cmd.Run()
+	if err != nil {
+		fmt.Printf("Erro copiando o diretório de saída: %v\n", err)
+	} else {
+		fmt.Println("Diretório de saída copiado com sucesso.")
+	}
 }
 
 func writeArtifact(filePath string, content string) {

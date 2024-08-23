@@ -1,13 +1,11 @@
 package lang
 
 import (
-	"bufio"
 	"fmt"
 	"isigo/context"
+	"isigo/std"
 	"isigo/symbol"
 	"isigo/value_types"
-	"os"
-	"strconv"
 )
 
 type Read struct {
@@ -25,46 +23,12 @@ func NewRead(ctx *context.Context, output *symbol.Symbol) Read {
 func (p Read) Output() (string, error) {
 	switch p.output.Type {
 	case value_types.IntegerValueTypeEntity:
-		return fmt.Sprintf("%s = scanfPanicInt()", p.output.Identifier), nil
+		return fmt.Sprintf("%s = std.Leia__int()", p.output.Identifier), nil
 	case value_types.FloatValueTypeEntity:
-		return fmt.Sprintf("%s = scanfPanicFloat()", p.output.Identifier), nil
+		return fmt.Sprintf("%s = std.Leia__float()", p.output.Identifier), nil
 	default:
-		return fmt.Sprintf("%s = scanfPanicString()", p.output.Identifier), nil
+		return fmt.Sprintf("%s = std.Leia__string()", p.output.Identifier), nil
 	}
-}
-
-func scanLine() string {
-	reader := bufio.NewReader(os.Stdin)
-	line, err := reader.ReadString('\n')
-	if err != nil {
-		panic(err)
-	}
-
-	return line[:len(line)-1]
-}
-
-func scanfPanicInt() int64 {
-	fval, err := strconv.ParseInt(scanLine(), 10, 64)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return fval
-}
-
-func scanfPanicFloat() float64 {
-	fval, err := strconv.ParseFloat(scanLine(), 64)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return fval
-}
-
-func scanfPanicString() string {
-	return scanLine()
 }
 
 func (p Read) Eval(ctx *context.Context) (any, error) {
@@ -72,11 +36,11 @@ func (p Read) Eval(ctx *context.Context) (any, error) {
 
 	switch p.output.Type {
 	case value_types.IntegerValueTypeEntity:
-		val = scanfPanicInt()
+		val = std.Leia__int()
 	case value_types.FloatValueTypeEntity:
-		val = scanfPanicFloat()
+		val = std.Leia__float()
 	default:
-		val = scanfPanicString()
+		val = std.Leia__string()
 	}
 
 	p.output.AssignRuntimeValue(val)

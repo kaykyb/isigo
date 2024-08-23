@@ -3,6 +3,7 @@ package lang
 import (
 	"fmt"
 	"isigo/context"
+	"isigo/std"
 )
 
 type Write struct {
@@ -23,7 +24,7 @@ func (p Write) Output() (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("fmt.Println(%s)", content), nil
+	return fmt.Sprintf("std.Escreva(%s)", content), nil
 }
 
 func (p Write) Eval(ctx *context.Context) (any, error) {
@@ -32,7 +33,7 @@ func (p Write) Eval(ctx *context.Context) (any, error) {
 		return nil, err
 	}
 
-	fmt.Println(exprVal)
+	std.Escreva(exprVal)
 
 	return nil, nil
 }
