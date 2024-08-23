@@ -25,32 +25,23 @@ func NewWithParent(parent *Context) Context {
 }
 
 func (c *Context) SymbolExists(identifier string) bool {
-	symbolExistsInsideThisContext := c.symbolTable.Exists(identifier)
-
-	if symbolExistsInsideThisContext {
+	if c.symbolTable.Exists(identifier) {
 		return true
 	}
 
-	if c.parent != nil {
-		return c.parent.SymbolExists(identifier)
-	}
-
-	return false
+	return c.parent != nil && c.parent.SymbolExists(identifier)
 }
 
 func (c *Context) RetrieveSymbol(identifier string) (*symbol.Symbol, error) {
-	symbolInsideThisContext := c.symbolTable.Retrieve(identifier)
-
-	if symbolInsideThisContext != nil {
-		return symbolInsideThisContext, nil
+	if sym := c.symbolTable.Retrieve(identifier); sym != nil {
+		return sym, nil
 	}
 
-	// Tenta procurar nos contextos superiores
 	if c.parent != nil {
 		return c.parent.RetrieveSymbol(identifier)
 	}
 
-	return nil, fmt.Errorf("O símbolo %s não existe no contexto atual", identifier)
+	return nil, fmt.Errorf("o símbolo %s não existe no contexto atual", identifier)
 }
 
 func (c *Context) CreateSymbol(identifier string, typeT value_types.ValueType) (*symbol.Symbol, error) {
@@ -59,8 +50,7 @@ func (c *Context) CreateSymbol(identifier string, typeT value_types.ValueType) (
 		Type:       typeT,
 	}
 
-	err := c.symbolTable.PutNew(identifier, symbolEntity)
-	return symbolEntity, err
+	return symbolEntity, c.symbolTable.PutNew(identifier, symbolEntity)
 }
 
 func (c *Context) AssignSymbol(identifier string) error {
@@ -70,6 +60,7 @@ func (c *Context) AssignSymbol(identifier string) error {
 	}
 
 	symbolEntity.Assigned = true
+
 	return nil
 }
 

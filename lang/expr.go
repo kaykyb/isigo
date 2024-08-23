@@ -87,7 +87,7 @@ func (p SumExpr) Eval(ctx *context.Context) (any, error) {
 		case float64:
 			return float64(left) + factor, nil
 		default:
-			return nil, fmt.Errorf("Não é possível somar: %T", termEval)
+			return nil, fmt.Errorf("não é possível somar: %T", termEval)
 		}
 	case float64:
 		switch factor := termEval.(type) {
@@ -96,10 +96,10 @@ func (p SumExpr) Eval(ctx *context.Context) (any, error) {
 		case float64:
 			return left + factor, nil
 		default:
-			return nil, fmt.Errorf("Não é possível somar: %T", termEval)
+			return nil, fmt.Errorf("não é possível somar: %T", termEval)
 		}
 	default:
-		return nil, fmt.Errorf("Não é possível somar: %T", leftEval)
+		return nil, fmt.Errorf("não é possível somar: %T", leftEval)
 	}
 }
 
@@ -171,7 +171,7 @@ func (p SubtractExpr) Eval(ctx *context.Context) (any, error) {
 		case float64:
 			return float64(left) + factor, nil
 		default:
-			return nil, fmt.Errorf("Não é possível subtrair: %T", termEval)
+			return nil, fmt.Errorf("não é possível subtrair: %T", termEval)
 		}
 	case float64:
 		switch factor := termEval.(type) {
@@ -180,10 +180,10 @@ func (p SubtractExpr) Eval(ctx *context.Context) (any, error) {
 		case float64:
 			return left + factor, nil
 		default:
-			return nil, fmt.Errorf("Não é possível subtrair: %T", termEval)
+			return nil, fmt.Errorf("não é possível subtrair: %T", termEval)
 		}
 	default:
-		return nil, fmt.Errorf("Não é possível subtrair: %T", leftEval)
+		return nil, fmt.Errorf("não é possível subtrair: %T", leftEval)
 	}
 }
 

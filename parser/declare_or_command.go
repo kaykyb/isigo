@@ -6,6 +6,15 @@ import (
 	"isigo/syntax"
 )
 
+func (c *Parser) ReplDeclareOrCommand(ctx *context.Context) (lang.Node, TokenDelta, error) {
+	delta, err := c.nextToken()
+	if err != nil {
+		return lang.Block{}, delta, err
+	}
+
+	return c.DeclareOrCommand(ctx, delta)
+}
+
 func (c *Parser) DeclareOrCommand(ctx *context.Context, delta TokenDelta) (lang.Node, TokenDelta, error) {
 	if delta.token.IsReservedWord() {
 		// -> declare

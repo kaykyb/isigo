@@ -1,5 +1,25 @@
 package failure
 
+import "fmt"
+
+type Semantic struct {
+	err string
+}
+
+func (e Semantic) Error() string {
+	return fmt.Sprintf("[Semantic Error]: %s", e.err)
+}
+
+func (e Semantic) Environment() Environment {
+	return SemanticEnvironment
+}
+
+func SemanticErrorf(format string, args ...interface{}) error {
+	return Semantic{
+		err: fmt.Sprintf(format, args...),
+	}
+}
+
 func TypeNotSumable(ltype string) error {
 	return SemanticErrorf("Não é possível somar em um '%s'.", ltype)
 }

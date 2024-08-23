@@ -1,5 +1,25 @@
 package failure
 
+import "fmt"
+
+type Syntax struct {
+	err string
+}
+
+func (e Syntax) Error() string {
+	return fmt.Sprintf("[Syntax Error]: %s", e.err)
+}
+
+func (e Syntax) Environment() Environment {
+	return SyntaxEnvironment
+}
+
+func SyntaxErrorf(format string, args ...interface{}) error {
+	return Syntax{
+		err: fmt.Sprintf(format, args...),
+	}
+}
+
 func AlreadyDeclared(id string) error {
 	return SyntaxErrorf("O símbolo '%s' já foi declarado neste contexto.", id)
 }
