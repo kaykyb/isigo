@@ -6,7 +6,7 @@ import (
 	"isigo/tokens"
 )
 
-type LexicalAnalysis struct {
+type Lexer struct {
 	position   common.CodePosition
 	buffer     []rune
 	bufferSize int
@@ -20,15 +20,15 @@ type ConsumptionDelta struct {
 
 type ConsumeTokenFunc = func() (delta ConsumptionDelta, token *tokens.Token, err error)
 
-func New(content string) LexicalAnalysis {
+func New(content string) Lexer {
 	runeBuffer := []rune(content)
-	return LexicalAnalysis{
+	return Lexer{
 		buffer:     []rune(content),
 		bufferSize: len(runeBuffer),
 	}
 }
 
-func (l *LexicalAnalysis) NextToken() (token tokens.Token, tokenPosition common.CodePosition, err error) {
+func (l *Lexer) NextToken() (token tokens.Token, tokenPosition common.CodePosition, err error) {
 	tokenPosition = l.position
 
 	var tokenFound *tokens.Token
@@ -58,7 +58,7 @@ func (l *LexicalAnalysis) NextToken() (token tokens.Token, tokenPosition common.
 	return token, tokenPosition, err
 }
 
-func (l *LexicalAnalysis) newPosition(delta ConsumptionDelta) common.CodePosition {
+func (l *Lexer) newPosition(delta ConsumptionDelta) common.CodePosition {
 	newPosition := common.NewCodePosition(l.position.BufferPosition, l.position.Line, l.position.Column)
 
 	if delta.linesConsumed > 0 {
@@ -72,7 +72,7 @@ func (l *LexicalAnalysis) newPosition(delta ConsumptionDelta) common.CodePositio
 	return newPosition
 }
 
-func (l *LexicalAnalysis) decideNextTokenConsumer() (ConsumeTokenFunc, common.CodePosition, error) {
+func (l *Lexer) decideNextTokenConsumer() (ConsumeTokenFunc, common.CodePosition, error) {
 	nextRune := l.peek(0)
 
 	switch {
@@ -113,7 +113,7 @@ func (l *LexicalAnalysis) decideNextTokenConsumer() (ConsumeTokenFunc, common.Co
 	}
 }
 
-func (l *LexicalAnalysis) consumeWhitespaceRune() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeWhitespaceRune() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		columnsConsumed: 1,
 		runesConsumed:   1,
@@ -122,7 +122,7 @@ func (l *LexicalAnalysis) consumeWhitespaceRune() (ConsumptionDelta, *tokens.Tok
 	return delta, nil, nil
 }
 
-func (l *LexicalAnalysis) consumeNewlineRune() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeNewlineRune() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		linesConsumed: 1,
 		runesConsumed: 1,
@@ -131,7 +131,7 @@ func (l *LexicalAnalysis) consumeNewlineRune() (ConsumptionDelta, *tokens.Token,
 	return delta, nil, nil
 }
 
-func (l *LexicalAnalysis) consumeTabRune() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeTabRune() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		columnsConsumed: 4,
 		runesConsumed:   1,
@@ -140,7 +140,7 @@ func (l *LexicalAnalysis) consumeTabRune() (ConsumptionDelta, *tokens.Token, err
 	return delta, nil, nil
 }
 
-func (l *LexicalAnalysis) consumeCartridgeReturn() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeCartridgeReturn() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		runesConsumed: 1,
 	}
@@ -148,7 +148,7 @@ func (l *LexicalAnalysis) consumeCartridgeReturn() (ConsumptionDelta, *tokens.To
 	return delta, nil, nil
 }
 
-func (l *LexicalAnalysis) consumeOperator() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeOperator() (ConsumptionDelta, *tokens.Token, error) {
 	startRune := l.peek(0)
 	proceedingRune := l.peek(1)
 
@@ -169,7 +169,7 @@ func (l *LexicalAnalysis) consumeOperator() (ConsumptionDelta, *tokens.Token, er
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeWord() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeWord() (ConsumptionDelta, *tokens.Token, error) {
 	word := ""
 	wDelta := 0
 
@@ -201,7 +201,7 @@ func (l *LexicalAnalysis) consumeWord() (ConsumptionDelta, *tokens.Token, error)
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeNumber() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeNumber() (ConsumptionDelta, *tokens.Token, error) {
 	word := ""
 	isDecimal := false
 
@@ -247,7 +247,7 @@ func (l *LexicalAnalysis) consumeNumber() (ConsumptionDelta, *tokens.Token, erro
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeAssignment() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeAssignment() (ConsumptionDelta, *tokens.Token, error) {
 	proceedingRune := l.peek(1)
 
 	if proceedingRune != '=' {
@@ -269,7 +269,7 @@ func (l *LexicalAnalysis) consumeAssignment() (ConsumptionDelta, *tokens.Token, 
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeStatementTerminator() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeStatementTerminator() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		columnsConsumed: 1,
 		runesConsumed:   1,
@@ -280,7 +280,7 @@ func (l *LexicalAnalysis) consumeStatementTerminator() (ConsumptionDelta, *token
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeOpenParenthesis() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeOpenParenthesis() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		columnsConsumed: 1,
 		runesConsumed:   1,
@@ -291,7 +291,7 @@ func (l *LexicalAnalysis) consumeOpenParenthesis() (ConsumptionDelta, *tokens.To
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeCloseParenthesis() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeCloseParenthesis() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		columnsConsumed: 1,
 		runesConsumed:   1,
@@ -302,7 +302,7 @@ func (l *LexicalAnalysis) consumeCloseParenthesis() (ConsumptionDelta, *tokens.T
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeOpenBrace() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeOpenBrace() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		columnsConsumed: 1,
 		runesConsumed:   1,
@@ -313,7 +313,7 @@ func (l *LexicalAnalysis) consumeOpenBrace() (ConsumptionDelta, *tokens.Token, e
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeCloseBrace() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeCloseBrace() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		columnsConsumed: 1,
 		runesConsumed:   1,
@@ -324,7 +324,7 @@ func (l *LexicalAnalysis) consumeCloseBrace() (ConsumptionDelta, *tokens.Token, 
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeSeparator() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeSeparator() (ConsumptionDelta, *tokens.Token, error) {
 	delta := ConsumptionDelta{
 		columnsConsumed: 1,
 		runesConsumed:   1,
@@ -335,7 +335,7 @@ func (l *LexicalAnalysis) consumeSeparator() (ConsumptionDelta, *tokens.Token, e
 	return delta, &token, nil
 }
 
-func (l *LexicalAnalysis) consumeString() (ConsumptionDelta, *tokens.Token, error) {
+func (l *Lexer) consumeString() (ConsumptionDelta, *tokens.Token, error) {
 	content := ""
 	wDelta := 0
 
@@ -377,7 +377,7 @@ func (l *LexicalAnalysis) consumeString() (ConsumptionDelta, *tokens.Token, erro
 	return delta, &token, err
 }
 
-func (l *LexicalAnalysis) peek(d int) rune {
+func (l *Lexer) peek(d int) rune {
 	if l.position.BufferPosition+d < l.bufferSize {
 		return l.buffer[l.position.BufferPosition+d]
 	}

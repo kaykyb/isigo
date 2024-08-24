@@ -7,7 +7,7 @@ import (
 )
 
 type Parser struct {
-	lexicalAnalysis *lexer.LexicalAnalysis
+	lexicalAnalysis *lexer.Lexer
 }
 
 type TokenDelta struct {
@@ -15,7 +15,7 @@ type TokenDelta struct {
 	position common.CodePosition
 }
 
-func New(lexicalAnalysis *lexer.LexicalAnalysis) Parser {
+func New(lexicalAnalysis *lexer.Lexer) Parser {
 	return Parser{
 		lexicalAnalysis: lexicalAnalysis,
 	}
