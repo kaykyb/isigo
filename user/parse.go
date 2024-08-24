@@ -16,13 +16,7 @@ func ParseFromFile(filePath string) lang.Program {
 		log.Fatalf("Erro ao ler o arquivo: %v", err)
 	}
 
-	l := lexer.LexicalAnalysis{}
-	err = l.SetContent(string(content))
-
-	if err != nil {
-		log.Fatalf("Erro ao ler o arquivo: %v", err)
-	}
-
+	l := lexer.New(string(content))
 	p := parser.New(&l)
 	ctx := context.New()
 	prog, delta, err := p.Prog(&ctx)

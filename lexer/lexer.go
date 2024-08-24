@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"isigo/common"
 	"isigo/failure"
 	"isigo/tokens"
@@ -27,18 +26,6 @@ func New(content string) LexicalAnalysis {
 		buffer:     []rune(content),
 		bufferSize: len(runeBuffer),
 	}
-}
-
-func (l *LexicalAnalysis) SetContent(content string) error {
-	if l.buffer != nil {
-		return fmt.Errorf("lexical analysis already contains a content buffer")
-	}
-
-	// Precisamos converter para rune para tratar caracteres UTF-8!
-	l.buffer = []rune(content)
-	l.bufferSize = len(l.buffer)
-
-	return nil
 }
 
 func (l *LexicalAnalysis) NextToken() (token tokens.Token, tokenPosition common.CodePosition, err error) {

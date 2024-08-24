@@ -17,12 +17,7 @@ func Repl() {
 	for {
 		command := readCommand()
 
-		l := lexer.LexicalAnalysis{}
-		err := l.SetContent("programa " + command + " fimprog.")
-		if err != nil {
-			panic(err)
-		}
-
+		l := lexer.New("programa " + command + " fimprog.")
 		p := parser.New(&l)
 		prog, _, err := p.Prog(&ctx)
 
