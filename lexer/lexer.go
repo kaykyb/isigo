@@ -72,11 +72,7 @@ func (l *LexicalAnalysis) NextToken() (token tokens.Token, tokenPosition common.
 }
 
 func (l *LexicalAnalysis) newPosition(delta ConsumptionDelta) common.CodePosition {
-	newPosition := common.CodePosition{
-		BufferPosition: l.position.BufferPosition,
-		Line:           l.position.Line,
-		Column:         l.position.Column,
-	}
+	newPosition := common.NewCodePosition(l.position.BufferPosition, l.position.Line, l.position.Column)
 
 	if delta.linesConsumed > 0 {
 		newPosition.Column = 0
