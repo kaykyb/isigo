@@ -21,9 +21,17 @@ type ConsumptionDelta struct {
 
 type ConsumeTokenFunc = func() (delta ConsumptionDelta, token *tokens.Token, err error)
 
+func New(content string) LexicalAnalysis {
+	runeBuffer := []rune(content)
+	return LexicalAnalysis{
+		buffer:     []rune(content),
+		bufferSize: len(runeBuffer),
+	}
+}
+
 func (l *LexicalAnalysis) SetContent(content string) error {
 	if l.buffer != nil {
-		return fmt.Errorf("Lexical analysis already contains a content buffer")
+		return fmt.Errorf("lexical analysis already contains a content buffer")
 	}
 
 	// Precisamos converter para rune para tratar caracteres UTF-8!
@@ -61,21 +69,6 @@ func (l *LexicalAnalysis) NextToken() (token tokens.Token, tokenPosition common.
 	}
 
 	return token, tokenPosition, err
-}
-
-func (l *LexicalAnalysis) Tokenize() (tokensFound []tokens.Token, err error) {
-	token, _, err := l.NextToken()
-
-	if err != nil {
-		return tokensFound, err
-	}
-
-	for token.Type() != tokens.EOF {
-		tokensFound = append(tokensFound, token)
-		token, _, err = l.NextToken()
-	}
-
-	return tokensFound, err
 }
 
 func (l *LexicalAnalysis) newPosition(delta ConsumptionDelta) common.CodePosition {

@@ -5,3 +5,11 @@ type CodePosition struct {
 	Line           int
 	Column         int
 }
+
+func NewCodePosition(bufferPosition, line, column int) CodePosition {
+	return CodePosition{
+		BufferPosition: bufferPosition,
+		Line:           line,
+		Column:         column,
+	}
+}
