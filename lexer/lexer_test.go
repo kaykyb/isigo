@@ -233,3 +233,11 @@ func TestTokenizeStringStringFail(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, common.NewCodePosition(14, 0, 14), pos)
 }
+
+func TestTokenizeFail(t *testing.T) {
+	l := New(`&`)
+	_, pos, err := l.NextToken()
+
+	assert.Error(t, err)
+	assert.Equal(t, common.NewCodePosition(0, 0, 0), pos)
+}
