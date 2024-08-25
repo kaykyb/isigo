@@ -29,6 +29,10 @@ func (m *MockFactor) ResultingType() (value_types.ValueType, error) {
 	return m.resultingType, m.err
 }
 
+func (m *MockFactor) IsFactor() bool {
+	return true
+}
+
 func TestFactorTerm_Output(t *testing.T) {
 	ctx := context.New()
 	factor := &MockFactor{output: "42"}

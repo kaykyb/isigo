@@ -31,6 +31,10 @@ func (m *MockExpr) Eval(ctx *context.Context) (any, error) {
 	return m.value, m.err
 }
 
+func (m *MockExpr) IsExpr() bool {
+	return true
+}
+
 func TestAssignment_Output(t *testing.T) {
 	ctx := context.New()
 	sym := &symbol.Symbol{
