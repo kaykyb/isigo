@@ -7,14 +7,9 @@ import (
 	"isigo/tokens"
 )
 
-func (c *Parser) Prog(ctx *context.Context) (lang.Program, TokenDelta, error) {
-	delta, err := c.nextToken()
-	if err != nil {
-		return lang.Program{}, delta, err
-	}
-
+func (c *Parser) Prog(ctx *context.Context, delta TokenDelta) (lang.Program, TokenDelta, error) {
 	// -> programa
-	delta, err = c.startProg(delta)
+	delta, err := c.startProg(delta)
 	if err != nil {
 		return lang.Program{}, delta, err
 	}

@@ -2,6 +2,8 @@ package parser
 
 import (
 	"isigo/common"
+	"isigo/context"
+	"isigo/lang"
 	"isigo/lexer"
 	"isigo/tokens"
 )
@@ -38,4 +40,13 @@ func (c *Parser) nextToken() (TokenDelta, error) {
 		token:    token,
 		position: position,
 	}, err
+}
+
+func (c *Parser) ParseProgram(ctx *context.Context) (lang.Program, TokenDelta, error) {
+	delta, err := c.nextToken()
+	if err != nil {
+		return lang.Program{}, delta, err
+	}
+
+	return c.Prog(ctx, delta)
 }

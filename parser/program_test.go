@@ -12,7 +12,9 @@ import (
 func TestProgram(t *testing.T) {
 	p, c := SetupLPC(t, "programa escreva(1). fimprog.")
 
-	doc, delta, err := p.Prog(c)
+	delta := AssertNextToken(t, p)
+
+	doc, delta, err := p.Prog(c, delta)
 
 	assert.NoError(t, err)
 	assert.IsType(t, lang.Program{}, doc)

@@ -19,7 +19,7 @@ func Repl() {
 
 		l := lexer.New("programa " + command + " fimprog.")
 		p := parser.New(&l)
-		prog, _, err := p.Prog(&ctx)
+		prog, _, err := p.ParseProgram(&ctx)
 
 		if err != nil {
 			fmt.Printf("🔴 %v\n", err)

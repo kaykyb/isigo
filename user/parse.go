@@ -19,7 +19,7 @@ func ParseFromFile(filePath string) lang.Program {
 	l := lexer.New(string(content))
 	p := parser.New(&l)
 	ctx := context.New()
-	prog, delta, err := p.Prog(&ctx)
+	prog, delta, err := p.ParseProgram(&ctx)
 	if err != nil {
 		log.Fatalf("Erro: [Linha %d, Coluna %d]: %v", delta.Position().Line+1, delta.Position().Column+1, err)
 	}
