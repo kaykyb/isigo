@@ -22,9 +22,11 @@ func (c *Parser) VariableContext(ctx *context.Context, delta TokenDelta) (lang.N
 
 	// -> fim bloco
 	if isBlockTerminator(delta.token) {
-		err = newContext.ValidateSymbolUsage()
-		if err != nil {
-			return lang.VariableContext{}, delta, err
+		if !c.isRepl {
+			err = newContext.ValidateSymbolUsage()
+			if err != nil {
+				return lang.VariableContext{}, delta, err
+			}
 		}
 
 		return declare, delta, nil
@@ -36,9 +38,11 @@ func (c *Parser) VariableContext(ctx *context.Context, delta TokenDelta) (lang.N
 		return lang.VariableContext{}, delta, err
 	}
 
-	err = newContext.ValidateSymbolUsage()
-	if err != nil {
-		return lang.VariableContext{}, delta, err
+	if !c.isRepl {
+		err = newContext.ValidateSymbolUsage()
+		if err != nil {
+			return lang.VariableContext{}, delta, err
+		}
 	}
 
 	return lang.NewVariableContext(ctx, declare, insideVariableContext), delta, err

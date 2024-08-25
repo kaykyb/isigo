@@ -4,6 +4,10 @@ import (
 	"isigo/syntax"
 )
 
+func IsEOFRune(c rune) bool {
+	return c == 0
+}
+
 func IsWhitespaceRune(c rune) bool {
 	return c == rune(' ')
 }

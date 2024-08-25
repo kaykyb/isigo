@@ -72,8 +72,6 @@ func (c *Parser) sumExpr(ctx *context.Context, left lang.Expr, delta TokenDelta)
 		return lang.SumExpr{}, delta, unexpectedContentError(delta, syntax.Sum)
 	}
 
-	print("HEREEEA")
-
 	leftType, err := left.ResultingType()
 	if err != nil {
 		return lang.SumExpr{}, delta, err

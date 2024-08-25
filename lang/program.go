@@ -38,3 +38,11 @@ func (p Program) Output() (string, error) {
 func (p Program) Eval(ctx *context.Context) (any, error) {
 	return p.child.Eval(ctx)
 }
+
+func (p Program) DeepestContext() *context.Context {
+	if p.child.DeepestContext() != nil {
+		return p.child.DeepestContext()
+	}
+
+	return p.context
+}

@@ -32,3 +32,17 @@ func (p Block) Output() (string, error) {
 func (p Block) Eval(ctx *context.Context) (any, error) {
 	return p.child.Eval(ctx)
 }
+
+func (p Block) DeepestContext() *context.Context {
+	variableContext, ok := p.child.(VariableContext)
+	if ok {
+		return variableContext.DeepestContext()
+	}
+
+	executionContext, ok := p.child.(ExecutionContext)
+	if ok {
+		return executionContext.DeepestContext()
+	}
+
+	return p.context
+}

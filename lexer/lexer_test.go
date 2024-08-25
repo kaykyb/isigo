@@ -9,43 +9,43 @@ import (
 )
 
 func TestTokenizeWhitespacesString(t *testing.T) {
-	l := New(" \n\t ")
+	l := NewStrLexer(t, " \n\t ")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
 	assert.Equal(t, tokens.NewEOF(""), tk)
-	assert.Equal(t, common.NewCodePosition(3, 1, 4), pos)
+	assert.Equal(t, common.NewCodePosition(4, 1, 5), pos)
 }
 
 func TestTokenizeNewlinesString(t *testing.T) {
-	l := New("\n\n\n")
+	l := NewStrLexer(t, "\n\n\n")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
 	assert.Equal(t, tokens.NewEOF(""), tk)
-	assert.Equal(t, common.NewCodePosition(2, 2, 0), pos)
+	assert.Equal(t, common.NewCodePosition(3, 3, 0), pos)
 }
 
 func TestTokenizeTabsString(t *testing.T) {
-	l := New("\t\t\t")
+	l := NewStrLexer(t, "\t\t\t")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
 	assert.Equal(t, tokens.NewEOF(""), tk)
-	assert.Equal(t, common.NewCodePosition(2, 0, 8), pos)
+	assert.Equal(t, common.NewCodePosition(3, 0, 12), pos)
 }
 
 func TestTokenizeCarriageReturnsString(t *testing.T) {
-	l := New("\r\r\r")
+	l := NewStrLexer(t, "\r\r\r")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
 	assert.Equal(t, tokens.NewEOF(""), tk)
-	assert.Equal(t, common.NewCodePosition(2, 0, 0), pos)
+	assert.Equal(t, common.NewCodePosition(3, 0, 0), pos)
 }
 
 func TestTokenizeOperatorString(t *testing.T) {
-	l := New("+ - * /")
+	l := NewStrLexer(t, "+ - * /")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -74,7 +74,7 @@ func TestTokenizeOperatorString(t *testing.T) {
 }
 
 func TestTokenizeIdentifierString(t *testing.T) {
-	l := New("hello world")
+	l := NewStrLexer(t, "hello world")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -93,7 +93,7 @@ func TestTokenizeIdentifierString(t *testing.T) {
 }
 
 func TestTokenizeIntegerString(t *testing.T) {
-	l := New("123 456 789")
+	l := NewStrLexer(t, "123 456 789")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -117,7 +117,7 @@ func TestTokenizeIntegerString(t *testing.T) {
 }
 
 func TestTokenizeFloatString(t *testing.T) {
-	l := New("123.45 678.90 987.65")
+	l := NewStrLexer(t, "123.45 678.90 987.65")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -136,7 +136,7 @@ func TestTokenizeFloatString(t *testing.T) {
 }
 
 func TestTokenizeStatementTerminatorString(t *testing.T) {
-	l := New(".")
+	l := NewStrLexer(t, ".")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -145,7 +145,7 @@ func TestTokenizeStatementTerminatorString(t *testing.T) {
 }
 
 func TestNoConflictStatementTerminatorDecimalString(t *testing.T) {
-	l := New("2.56.")
+	l := NewStrLexer(t, "2.56.")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -159,7 +159,7 @@ func TestNoConflictStatementTerminatorDecimalString(t *testing.T) {
 }
 
 func TestTokenizeAssignmentOperatorString(t *testing.T) {
-	l := New(":=")
+	l := NewStrLexer(t, ":=")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -168,7 +168,7 @@ func TestTokenizeAssignmentOperatorString(t *testing.T) {
 }
 
 func TestTokenizeAssignmentOperatorStringFail(t *testing.T) {
-	l := New(":")
+	l := NewStrLexer(t, ":")
 	_, pos, err := l.NextToken()
 
 	assert.Error(t, err)
@@ -176,7 +176,7 @@ func TestTokenizeAssignmentOperatorStringFail(t *testing.T) {
 }
 
 func TestTokenizeParenthesesString(t *testing.T) {
-	l := New("()")
+	l := NewStrLexer(t, "()")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -190,7 +190,7 @@ func TestTokenizeParenthesesString(t *testing.T) {
 }
 
 func TestTokenizeBracesString(t *testing.T) {
-	l := New("{}")
+	l := NewStrLexer(t, "{}")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -204,7 +204,7 @@ func TestTokenizeBracesString(t *testing.T) {
 }
 
 func TestTokenizeCommaString(t *testing.T) {
-	l := New(",")
+	l := NewStrLexer(t, ",")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -213,7 +213,7 @@ func TestTokenizeCommaString(t *testing.T) {
 }
 
 func TestTokenizeStringString(t *testing.T) {
-	l := New(`"Hello, world!" "This is a test."`)
+	l := NewStrLexer(t, `"Hello, world!" "This is a test."`)
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -227,7 +227,7 @@ func TestTokenizeStringString(t *testing.T) {
 }
 
 func TestTokenizeStringStringFail(t *testing.T) {
-	l := New(`"Hello, world!`)
+	l := NewStrLexer(t, `"Hello, world!`)
 	_, pos, err := l.NextToken()
 
 	assert.Error(t, err)
@@ -235,7 +235,7 @@ func TestTokenizeStringStringFail(t *testing.T) {
 }
 
 func TestTokenizeFail(t *testing.T) {
-	l := New(`&`)
+	l := NewStrLexer(t, `&`)
 	_, pos, err := l.NextToken()
 
 	assert.Error(t, err)

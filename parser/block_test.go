@@ -2,9 +2,7 @@ package parser
 
 import (
 	"isigo/common"
-	"isigo/context"
 	"isigo/lang"
-	"isigo/lexer"
 	"isigo/tokens"
 	"isigo/value_types"
 	"testing"
@@ -13,16 +11,14 @@ import (
 )
 
 func TestBlockExecutionContext(t *testing.T) {
-	l := lexer.New("a := 1. }")
-	p := New(&l)
+	p, c := SetupLPC(t, "a := 1. }")
 
-	c := context.New()
 	c.CreateSymbol("a", value_types.IntegerValueTypeEntity)
 
 	delta, err := p.nextToken()
 	assert.NoError(t, err)
 
-	block, delta, err := p.Block(&c, delta)
+	block, delta, err := p.Block(c, delta)
 
 	assert.NoError(t, err)
 
@@ -33,15 +29,12 @@ func TestBlockExecutionContext(t *testing.T) {
 }
 
 func TestBlockDeclareContext(t *testing.T) {
-	l := lexer.New("declare a inteiro. a := 1. }")
-	p := New(&l)
-
-	c := context.New()
+	p, c := SetupLPC(t, "declare a inteiro. a := 1. }")
 
 	delta, err := p.nextToken()
 	assert.NoError(t, err)
 
-	block, delta, err := p.Block(&c, delta)
+	block, delta, err := p.Block(c, delta)
 
 	assert.NoError(t, err)
 
@@ -52,16 +45,14 @@ func TestBlockDeclareContext(t *testing.T) {
 }
 
 func TestBlockExecutionContextProgram(t *testing.T) {
-	l := lexer.New("a := 1. fimprog.")
-	p := New(&l)
+	p, c := SetupLPC(t, "a := 1. fimprog.")
 
-	c := context.New()
 	c.CreateSymbol("a", value_types.IntegerValueTypeEntity)
 
 	delta, err := p.nextToken()
 	assert.NoError(t, err)
 
-	block, delta, err := p.Block(&c, delta)
+	block, delta, err := p.Block(c, delta)
 
 	assert.NoError(t, err)
 

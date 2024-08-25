@@ -6,47 +6,43 @@ import (
 	"isigo/context"
 	"isigo/lexer"
 	"isigo/parser"
+	"isigo/sources"
 	"os"
+	"strings"
 )
 
 func Repl() {
-	fmt.Println("--- ISIGO REPL ----")
+	fmt.Println("ISIGO REPL")
 
-	ctx := context.New()
+	initialCtx := context.New()
+	currentCtx := &initialCtx
+
+	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		command := readCommand()
+		fmt.Print("isigo> ")
+		nextCommand, _ := reader.ReadString('\n')
+		nextCommandCompiled := fmt.Sprintf("programa\n%sfimprog.", nextCommand)
+		source := sources.NewBuildReader(bufio.NewReader(strings.NewReader(nextCommandCompiled)))
 
-		l := lexer.New("programa " + command + " fimprog.")
-		p := parser.New(&l)
-		prog, _, err := p.ParseProgram(&ctx)
+		l := lexer.New(source)
+		p := parser.NewReplParser(&l)
+
+		prog, _, err := p.ParseProgram(currentCtx)
 
 		if err != nil {
 			fmt.Printf("🔴 %v\n", err)
 			continue
 		}
 
-		result, err := prog.Eval(&ctx)
+		result, err := prog.Eval(currentCtx)
 		if err != nil {
 			fmt.Printf("🔴 %v\n", err)
 			continue
 		}
 
 		fmt.Printf("🟢 %v\n", result)
+
+		currentCtx = prog.DeepestContext()
 	}
-}
-
-func scanLine() string {
-	reader := bufio.NewReader(os.Stdin)
-	line, err := reader.ReadString('\n')
-	if err != nil {
-		panic(err)
-	}
-
-	return line[:len(line)-1]
-}
-
-func readCommand() string {
-	fmt.Print("👉 ")
-	return scanLine()
 }

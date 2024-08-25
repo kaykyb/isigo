@@ -1,22 +1,28 @@
 package user
 
 import (
+	"bufio"
 	"isigo/context"
 	"isigo/lang"
 	"isigo/lexer"
 	"isigo/parser"
+	"isigo/sources"
 	"log"
 	"os"
 )
 
 func ParseFromFile(filePath string) lang.Program {
 	// Lê o arquivo
-	content, err := os.ReadFile(filePath)
+	file, err := os.Open(filePath)
 	if err != nil {
 		log.Fatalf("Erro ao ler o arquivo: %v", err)
 	}
+	defer file.Close()
 
-	l := lexer.New(string(content))
+	reader := bufio.NewReader(file)
+	sourceReader := sources.NewBuildReader(reader)
+
+	l := lexer.New(sourceReader)
 	p := parser.New(&l)
 	ctx := context.New()
 	prog, delta, err := p.ParseProgram(&ctx)

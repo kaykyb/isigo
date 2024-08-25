@@ -10,6 +10,7 @@ import (
 
 type Parser struct {
 	lexicalAnalysis *lexer.Lexer
+	isRepl          bool
 }
 
 type TokenDelta struct {
@@ -27,6 +28,13 @@ func NewTokenDelta(t tokens.Token, p common.CodePosition) TokenDelta {
 func New(lexicalAnalysis *lexer.Lexer) Parser {
 	return Parser{
 		lexicalAnalysis: lexicalAnalysis,
+	}
+}
+
+func NewReplParser(lexicalAnalysis *lexer.Lexer) Parser {
+	return Parser{
+		lexicalAnalysis: lexicalAnalysis,
+		isRepl:          true,
 	}
 }
 

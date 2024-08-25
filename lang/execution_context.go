@@ -46,3 +46,14 @@ func (p ExecutionContext) Eval(ctx *context.Context) (lastReturnVal any, err err
 
 	return lastReturnVal, err
 }
+
+func (p ExecutionContext) DeepestContext() *context.Context {
+	for i := len(p.children) - 1; i >= 0; i-- {
+		variableContext, ok := p.children[i].(VariableContext)
+		if ok {
+			return variableContext.context
+		}
+	}
+
+	return p.context
+}

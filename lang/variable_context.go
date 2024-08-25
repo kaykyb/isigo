@@ -50,3 +50,17 @@ func (p VariableContext) Declare() Node {
 func (p VariableContext) Child() Node {
 	return p.child
 }
+
+func (p VariableContext) DeepestContext() *context.Context {
+	executionContext, ok := p.child.(ExecutionContext)
+	if ok && executionContext.DeepestContext() != nil {
+		return executionContext.DeepestContext()
+	}
+
+	variableContext, ok := p.child.(VariableContext)
+	if ok {
+		return variableContext.DeepestContext()
+	}
+
+	return p.context
+}

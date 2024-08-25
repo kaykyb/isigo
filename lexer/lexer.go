@@ -3,13 +3,13 @@ package lexer
 import (
 	"isigo/common"
 	"isigo/failure"
+	"isigo/sources"
 	"isigo/tokens"
 )
 
 type Lexer struct {
-	position   common.CodePosition
-	buffer     []rune
-	bufferSize int
+	position common.CodePosition
+	source   sources.SourceStream
 }
 
 type ConsumptionDelta struct {
@@ -20,11 +20,9 @@ type ConsumptionDelta struct {
 
 type ConsumeTokenFunc = func() (delta ConsumptionDelta, token *tokens.Token, err error)
 
-func New(content string) Lexer {
-	runeBuffer := []rune(content)
+func New(source sources.SourceStream) Lexer {
 	return Lexer{
-		buffer:     []rune(content),
-		bufferSize: len(runeBuffer),
+		source: source,
 	}
 }
 
@@ -33,9 +31,11 @@ func (l *Lexer) NextToken() (token tokens.Token, tokenPosition common.CodePositi
 
 	var tokenFound *tokens.Token
 
-	for l.position.BufferPosition < l.bufferSize && tokenFound == nil {
+	for tokenFound == nil {
+		nextRune := l.source.Peek(0)
+
 		var consume ConsumeTokenFunc
-		consume, tokenPosition, err = l.decideNextTokenConsumer()
+		consume, tokenPosition, err = l.decideNextTokenConsumer(nextRune)
 
 		if err != nil || consume == nil {
 			return tokens.Token{}, tokenPosition, err
@@ -46,6 +46,11 @@ func (l *Lexer) NextToken() (token tokens.Token, tokenPosition common.CodePositi
 
 		l.position = l.newPosition(delta)
 
+		if err != nil {
+			return token, l.position, err
+		}
+
+		err := l.source.FlushMultipleRunes(delta.runesConsumed)
 		if err != nil {
 			return token, l.position, err
 		}
@@ -72,10 +77,10 @@ func (l *Lexer) newPosition(delta ConsumptionDelta) common.CodePosition {
 	return newPosition
 }
 
-func (l *Lexer) decideNextTokenConsumer() (ConsumeTokenFunc, common.CodePosition, error) {
-	nextRune := l.peek(0)
-
+func (l *Lexer) decideNextTokenConsumer(nextRune rune) (ConsumeTokenFunc, common.CodePosition, error) {
 	switch {
+	case IsEOFRune(nextRune):
+		return l.consumeEOFRune, l.position, nil
 	case IsWhitespaceRune(nextRune):
 		return l.consumeWhitespaceRune, l.position, nil
 	case IsNewLineRune(nextRune):
@@ -111,6 +116,22 @@ func (l *Lexer) decideNextTokenConsumer() (ConsumeTokenFunc, common.CodePosition
 	default:
 		return nil, l.position, failure.UnexpectedCharacter(nextRune)
 	}
+}
+
+func (l *Lexer) consumeEOFRune() (ConsumptionDelta, *tokens.Token, error) {
+	err := l.source.FlushRune()
+	if err != nil {
+		return ConsumptionDelta{}, nil, err
+	}
+
+	delta := ConsumptionDelta{
+		columnsConsumed: 0,
+		runesConsumed:   1,
+	}
+
+	eofToken := tokens.NewEOF("")
+
+	return delta, &eofToken, nil
 }
 
 func (l *Lexer) consumeWhitespaceRune() (ConsumptionDelta, *tokens.Token, error) {
@@ -378,9 +399,5 @@ func (l *Lexer) consumeString() (ConsumptionDelta, *tokens.Token, error) {
 }
 
 func (l *Lexer) peek(d int) rune {
-	if l.position.BufferPosition+d < l.bufferSize {
-		return l.buffer[l.position.BufferPosition+d]
-	}
-
-	return 0
+	return l.source.Peek(d)
 }
