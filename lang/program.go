@@ -18,6 +18,10 @@ func NewProgram(ctx *context.Context, child Block) Program {
 	}
 }
 
+func (p Program) Child() Block {
+	return p.child
+}
+
 func wrappedProgram(content string) string {
 	return fmt.Sprintf("package main\n\nimport \"isigoprogram/std\"\n\nfunc main() {\n%s\n}\n", content)
 }
