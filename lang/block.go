@@ -16,6 +16,10 @@ func NewBlock(ctx *context.Context, child Node) Block {
 	}
 }
 
+func (p Block) Child() Node {
+	return p.child
+}
+
 func (p Block) Output() (string, error) {
 	content, err := p.child.Output()
 	if err != nil {

@@ -17,6 +17,10 @@ func NewExecutionContext(ctx *context.Context, children []Node) ExecutionContext
 	}
 }
 
+func (p ExecutionContext) Children() []Node {
+	return p.children
+}
+
 func (p ExecutionContext) Output() (string, error) {
 	var lines []string
 	for _, child := range p.children {

@@ -15,6 +15,13 @@ type TokenDelta struct {
 	position common.CodePosition
 }
 
+func NewTokenDelta(t tokens.Token, p common.CodePosition) TokenDelta {
+	return TokenDelta{
+		token:    t,
+		position: p,
+	}
+}
+
 func New(lexicalAnalysis *lexer.Lexer) Parser {
 	return Parser{
 		lexicalAnalysis: lexicalAnalysis,

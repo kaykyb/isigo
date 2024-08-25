@@ -35,7 +35,7 @@ func (c *Parser) exprInternal(ctx *context.Context, left lang.Expr, delta TokenD
 		return c.exprAux(ctx, leftExpr, delta)
 	}
 
-	return c.term(ctx, left, delta)
+	return leftExpr, delta, nil
 }
 
 func (c *Parser) exprAux(ctx *context.Context, left lang.Expr, delta TokenDelta) (lang.Expr, TokenDelta, error) {
