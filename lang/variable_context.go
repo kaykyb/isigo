@@ -42,3 +42,11 @@ func (p VariableContext) Eval(ctx *context.Context) (any, error) {
 
 	return p.child.Eval(&newContext)
 }
+
+func (p VariableContext) Declare() Node {
+	return p.declare
+}
+
+func (p VariableContext) Child() Node {
+	return p.child
+}
