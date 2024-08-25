@@ -10,6 +10,7 @@ import (
 type Term interface {
 	Node
 	ResultingType() (value_types.ValueType, error)
+	IsTerm() bool
 }
 
 type FactorTerm struct {
@@ -32,6 +33,10 @@ func (p FactorTerm) Output() (string, error) {
 
 func (p FactorTerm) Eval(ctx *context.Context) (any, error) {
 	return p.factor.Eval(ctx)
+}
+
+func (p FactorTerm) IsTerm() bool {
+	return true
 }
 
 type MultiplyTerm struct {
@@ -97,6 +102,10 @@ func (p MultiplyTerm) Eval(ctx *context.Context) (any, error) {
 	}
 }
 
+func (p MultiplyTerm) IsTerm() bool {
+	return true
+}
+
 type DivideTerm struct {
 	context *context.Context
 	left    Term
@@ -158,6 +167,10 @@ func (p DivideTerm) Eval(ctx *context.Context) (any, error) {
 	default:
 		return nil, fmt.Errorf("não é possível dividir: %T", leftEval)
 	}
+}
+
+func (p DivideTerm) IsTerm() bool {
+	return true
 }
 
 func (n FactorTerm) ResultingType() (value_types.ValueType, error) {

@@ -10,6 +10,7 @@ import (
 type Factor interface {
 	Node
 	ResultingType() (value_types.ValueType, error)
+	IsFactor() bool
 }
 
 // Integer --------
@@ -37,6 +38,10 @@ func (p IntegerFactor) Eval(ctx *context.Context) (any, error) {
 	return p.value, nil
 }
 
+func (p IntegerFactor) IsFactor() bool {
+	return true
+}
+
 // Float ----------
 type FloatFactor struct {
 	context *context.Context
@@ -60,6 +65,10 @@ func (p FloatFactor) Output() (string, error) {
 
 func (p FloatFactor) Eval(ctx *context.Context) (any, error) {
 	return p.value, nil
+}
+
+func (p FloatFactor) IsFactor() bool {
+	return true
 }
 
 // String ----------
@@ -87,6 +96,10 @@ func (p StringFactor) Eval(ctx *context.Context) (any, error) {
 	return p.value, nil
 }
 
+func (p StringFactor) IsFactor() bool {
+	return true
+}
+
 // Symbol ----------
 type SymbolFactor struct {
 	context *context.Context
@@ -110,6 +123,10 @@ func (p SymbolFactor) Output() (string, error) {
 
 func (p SymbolFactor) Eval(ctx *context.Context) (any, error) {
 	return p.symbol.RuntimeValue(), nil
+}
+
+func (p SymbolFactor) IsFactor() bool {
+	return true
 }
 
 // Expr ------------
@@ -140,4 +157,8 @@ func (p ExpressionFactor) Output() (string, error) {
 
 func (p ExpressionFactor) Eval(ctx *context.Context) (any, error) {
 	return p.expression.Eval(ctx)
+}
+
+func (p ExpressionFactor) IsFactor() bool {
+	return true
 }

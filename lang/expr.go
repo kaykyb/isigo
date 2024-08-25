@@ -10,6 +10,7 @@ import (
 type Expr interface {
 	Node
 	ResultingType() (value_types.ValueType, error)
+	IsExpr() bool
 }
 
 // ---- TERM ----
@@ -36,6 +37,10 @@ func (p TermExpr) Eval(ctx *context.Context) (any, error) {
 
 func (n TermExpr) ResultingType() (value_types.ValueType, error) {
 	return n.term.ResultingType()
+}
+
+func (p TermExpr) IsExpr() bool {
+	return true
 }
 
 // ---- SUM EXPR ----
@@ -122,6 +127,10 @@ func (n SumExpr) ResultingType() (value_types.ValueType, error) {
 	return leftTypeSumable.ResultingSumType(termType)
 }
 
+func (p SumExpr) IsExpr() bool {
+	return true
+}
+
 // ---- SUBTRACT EXPR ----
 
 type SubtractExpr struct {
@@ -204,4 +213,8 @@ func (n SubtractExpr) ResultingType() (value_types.ValueType, error) {
 	}
 
 	return leftTypeSubtractable.ResultingSubtractType(termType)
+}
+
+func (p SubtractExpr) IsExpr() bool {
+	return true
 }

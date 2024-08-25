@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"isigo/context"
 	"isigo/failure"
 	"isigo/lang"
@@ -19,9 +20,12 @@ func (c *Parser) Expr(ctx *context.Context, delta TokenDelta) (lang.Expr, TokenD
 	return c.exprInternal(ctx, factor, delta)
 }
 
-func (c *Parser) exprInternal(ctx *context.Context, left lang.Expr, delta TokenDelta) (lang.Expr, TokenDelta, error) {
+func (c *Parser) exprInternal(ctx *context.Context, left lang.Factor, delta TokenDelta) (lang.Expr, TokenDelta, error) {
 	if delta.token.IsOperator() && (delta.token.Is(syntax.Sum) || delta.token.Is(syntax.Minus)) {
-		return c.exprAux(ctx, left, delta)
+		factorTerm := lang.NewFactorTerm(ctx, left)
+		termExpr := lang.NewTermExpr(ctx, factorTerm)
+
+		return c.exprAux(ctx, termExpr, delta)
 	}
 
 	term, delta, err := c.term(ctx, left, delta)
@@ -63,10 +67,12 @@ func (c *Parser) exprAux(ctx *context.Context, left lang.Expr, delta TokenDelta)
 	return leftExpr, delta, nil
 }
 
-func (c *Parser) sumExpr(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.SumExpr, TokenDelta, error) {
+func (c *Parser) sumExpr(ctx *context.Context, left lang.Expr, delta TokenDelta) (lang.SumExpr, TokenDelta, error) {
 	if !delta.token.Is(syntax.Sum) {
 		return lang.SumExpr{}, delta, unexpectedContentError(delta, syntax.Sum)
 	}
+
+	print("HEREEEA")
 
 	leftType, err := left.ResultingType()
 	if err != nil {
@@ -103,11 +109,10 @@ func (c *Parser) sumExpr(ctx *context.Context, left lang.Term, delta TokenDelta)
 		return lang.SumExpr{}, delta, err
 	}
 
-	leftTerm := lang.NewTermExpr(ctx, left)
-	return lang.NewSumExpr(ctx, leftTerm, term), delta, err
+	return lang.NewSumExpr(ctx, left, term), delta, err
 }
 
-func (c *Parser) subtractExpr(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.SubtractExpr, TokenDelta, error) {
+func (c *Parser) subtractExpr(ctx *context.Context, left lang.Expr, delta TokenDelta) (lang.SubtractExpr, TokenDelta, error) {
 	if !delta.token.Is(syntax.Minus) {
 		return lang.SubtractExpr{}, delta, unexpectedContentError(delta, syntax.Minus)
 	}
@@ -152,16 +157,17 @@ func (c *Parser) subtractExpr(ctx *context.Context, left lang.Term, delta TokenD
 		return lang.SubtractExpr{}, delta, err
 	}
 
-	leftTerm := lang.NewTermExpr(ctx, left)
-	return lang.NewSubtractExpr(ctx, leftTerm, term), delta, err
+	return lang.NewSubtractExpr(ctx, left, term), delta, err
 }
 
-func (c *Parser) term(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.Term, TokenDelta, error) {
+func (c *Parser) term(ctx *context.Context, left lang.Factor, delta TokenDelta) (lang.Term, TokenDelta, error) {
+	leftTerm := lang.NewFactorTerm(ctx, left)
+
 	if delta.token.IsOperator() && (delta.token.Is(syntax.Multiply) || delta.token.Is(syntax.Divide)) {
-		return c.termAux(ctx, left, delta)
+		return c.termAux(ctx, leftTerm, delta)
 	}
 
-	return lang.NewFactorTerm(ctx, left), delta, nil
+	return leftTerm, delta, nil
 }
 
 func (c *Parser) termAux(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.Term, TokenDelta, error) {
@@ -182,6 +188,8 @@ func (c *Parser) termAux(ctx *context.Context, left lang.Term, delta TokenDelta)
 		return leftTerm, delta, err
 	}
 
+	fmt.Println(leftTerm)
+
 	if delta.token.IsOperator() && (delta.token.Is(syntax.Multiply) || delta.token.Is(syntax.Divide)) {
 		return c.termAux(ctx, leftTerm, delta)
 	}
@@ -189,7 +197,7 @@ func (c *Parser) termAux(ctx *context.Context, left lang.Term, delta TokenDelta)
 	return leftTerm, delta, nil
 }
 
-func (c *Parser) multiplyTermAux(ctx *context.Context, left lang.Factor, delta TokenDelta) (lang.MultiplyTerm, TokenDelta, error) {
+func (c *Parser) multiplyTermAux(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.MultiplyTerm, TokenDelta, error) {
 	if !delta.token.Is(syntax.Multiply) {
 		return lang.MultiplyTerm{}, delta, unexpectedContentError(delta, syntax.Multiply)
 	}
@@ -224,11 +232,10 @@ func (c *Parser) multiplyTermAux(ctx *context.Context, left lang.Factor, delta T
 		return lang.MultiplyTerm{}, delta, err
 	}
 
-	leftTerm := lang.NewFactorTerm(ctx, left)
-	return lang.NewMultiplyTerm(ctx, leftTerm, factor), delta, err
+	return lang.NewMultiplyTerm(ctx, left, factor), delta, err
 }
 
-func (c *Parser) divideTermAux(ctx *context.Context, left lang.Factor, delta TokenDelta) (lang.DivideTerm, TokenDelta, error) {
+func (c *Parser) divideTermAux(ctx *context.Context, left lang.Term, delta TokenDelta) (lang.DivideTerm, TokenDelta, error) {
 	if !delta.token.Is(syntax.Divide) {
 		return lang.DivideTerm{}, delta, unexpectedContentError(delta, syntax.Divide)
 	}
@@ -263,8 +270,7 @@ func (c *Parser) divideTermAux(ctx *context.Context, left lang.Factor, delta Tok
 		return lang.DivideTerm{}, delta, err
 	}
 
-	leftTerm := lang.NewFactorTerm(ctx, left)
-	return lang.NewDivideTerm(ctx, leftTerm, factor), delta, err
+	return lang.NewDivideTerm(ctx, left, factor), delta, err
 }
 
 func (c *Parser) Factor(ctx *context.Context, delta TokenDelta) (lang.Factor, TokenDelta, error) {
