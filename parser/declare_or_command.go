@@ -24,6 +24,7 @@ func (c *Parser) DeclareOrCommand(ctx *context.Context, delta TokenDelta) (lang.
 
 		// -> if
 		if delta.token.Is(syntax.If) {
+			return c.IfStatement(ctx, delta)
 		}
 
 		// -> leia

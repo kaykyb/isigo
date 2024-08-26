@@ -30,6 +30,11 @@ type DivisibleValueType interface {
 	ResultingDivisionType(by ValueType) (ValueType, error)
 }
 
+type OrdenableValueType interface {
+	ValueType
+	ToOrdenable(value any) (float64, error)
+}
+
 func TypeEntityForTypeT(typeT string) ValueType {
 	switch typeT {
 	case syntax.IntegerT:
@@ -38,6 +43,8 @@ func TypeEntityForTypeT(typeT string) ValueType {
 		return FloatValueTypeEntity
 	case syntax.StringT:
 		return StringValueTypeEntity
+	case syntax.BooleanT:
+		return BooleanValueTypeEntity
 	default:
 		return IntegerValueTypeEntity
 	}

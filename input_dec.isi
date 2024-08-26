@@ -1,7 +1,14 @@
 programa
     declare a decimal.
     declare b decimal.
+
     b := 5.4.
+
     leia(a).
-    escreva(a + b).
+
+    se (a > b) {
+        escreva(1).
+    } senao {
+        escreva(2).
+    }
 fimprog.

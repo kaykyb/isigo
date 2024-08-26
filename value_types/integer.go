@@ -8,6 +8,7 @@ type IntegerValueType interface {
 	SubtractableValueType
 	MultipliableValueType
 	DivisibleValueType
+	OrdenableValueType
 }
 
 type integerValueType struct{}
@@ -64,4 +65,13 @@ func (v integerValueType) CanAssign(a ValueType) bool {
 
 func (v integerValueType) Output() string {
 	return "int64"
+}
+
+func (v integerValueType) ToOrdenable(value any) (float64, error) {
+	integerValue, ok := value.(int64)
+	if !ok {
+		panic("O valor atribuído não é um inteiro")
+	}
+
+	return float64(integerValue), nil
 }

@@ -46,7 +46,8 @@ func TestAssignment_Output(t *testing.T) {
 		output: "42",
 	}
 
-	assignment := lang.NewAssignment(&ctx, sym, expr)
+	assignment, err := lang.NewAssignment(&ctx, sym, expr)
+	assert.NoError(t, err)
 
 	output, err := assignment.Output()
 
@@ -66,9 +67,10 @@ func TestAssignment_Output_Error(t *testing.T) {
 		err:    fmt.Errorf("mock error"),
 	}
 
-	assignment := lang.NewAssignment(&ctx, sym, expr)
+	assignment, err := lang.NewAssignment(&ctx, sym, expr)
+	assert.NoError(t, err)
 
-	_, err := assignment.Output()
+	_, err = assignment.Output()
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, "mock error")
@@ -85,7 +87,8 @@ func TestAssignment_Eval(t *testing.T) {
 		value: 42,
 	}
 
-	assignment := lang.NewAssignment(&ctx, sym, expr)
+	assignment, err := lang.NewAssignment(&ctx, sym, expr)
+	assert.NoError(t, err)
 
 	val, err := assignment.Eval(&ctx)
 
@@ -106,9 +109,10 @@ func TestAssignment_Eval_Error(t *testing.T) {
 		err: fmt.Errorf("mock error"),
 	}
 
-	assignment := lang.NewAssignment(&ctx, sym, expr)
+	assignment, err := lang.NewAssignment(&ctx, sym, expr)
+	assert.NoError(t, err)
 
-	_, err := assignment.Eval(&ctx)
+	_, err = assignment.Eval(&ctx)
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, "mock error")

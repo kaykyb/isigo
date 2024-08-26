@@ -22,4 +22,5 @@ const (
 	IntegerT   = "inteiro"
 	FloatT     = "decimal"
 	StringT    = "texto"
+	BooleanT   = "bool"
 )

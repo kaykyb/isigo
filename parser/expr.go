@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"isigo/context"
 	"isigo/failure"
 	"isigo/lang"
@@ -72,17 +71,7 @@ func (c *Parser) sumExpr(ctx *context.Context, left lang.Expr, delta TokenDelta)
 		return lang.SumExpr{}, delta, unexpectedContentError(delta, syntax.Sum)
 	}
 
-	leftType, err := left.ResultingType()
-	if err != nil {
-		return lang.SumExpr{}, delta, err
-	}
-
-	leftTypeSumable, ok := leftType.(value_types.SumableValueType)
-	if !ok {
-		return lang.SumExpr{}, delta, failure.TypeNotSumable(leftType.Name())
-	}
-
-	delta, err = c.nextToken()
+	delta, err := c.nextToken()
 	if err != nil {
 		return lang.SumExpr{}, delta, err
 	}
@@ -97,17 +86,8 @@ func (c *Parser) sumExpr(ctx *context.Context, left lang.Expr, delta TokenDelta)
 		return lang.SumExpr{}, delta, err
 	}
 
-	termType, err := term.ResultingType()
-	if err != nil {
-		return lang.SumExpr{}, delta, err
-	}
-
-	_, err = leftTypeSumable.ResultingSumType(termType)
-	if err != nil {
-		return lang.SumExpr{}, delta, err
-	}
-
-	return lang.NewSumExpr(ctx, left, term), delta, err
+	sumExpr, err := lang.NewSumExpr(ctx, left, term)
+	return sumExpr, delta, err
 }
 
 func (c *Parser) subtractExpr(ctx *context.Context, left lang.Expr, delta TokenDelta) (lang.SubtractExpr, TokenDelta, error) {
@@ -115,17 +95,7 @@ func (c *Parser) subtractExpr(ctx *context.Context, left lang.Expr, delta TokenD
 		return lang.SubtractExpr{}, delta, unexpectedContentError(delta, syntax.Minus)
 	}
 
-	leftType, err := left.ResultingType()
-	if err != nil {
-		return lang.SubtractExpr{}, delta, err
-	}
-
-	leftTypeSubtractable, ok := leftType.(value_types.SubtractableValueType)
-	if !ok {
-		return lang.SubtractExpr{}, delta, failure.TypeNotSubtractable(leftType.Name())
-	}
-
-	delta, err = c.nextToken()
+	delta, err := c.nextToken()
 	if err != nil {
 		return lang.SubtractExpr{}, delta, err
 	}
@@ -140,22 +110,13 @@ func (c *Parser) subtractExpr(ctx *context.Context, left lang.Expr, delta TokenD
 		return lang.SubtractExpr{}, delta, err
 	}
 
-	termType, err := term.ResultingType()
-	if err != nil {
-		return lang.SubtractExpr{}, delta, err
-	}
-
-	_, err = leftTypeSubtractable.ResultingSubtractType(termType)
-	if err != nil {
-		return lang.SubtractExpr{}, delta, err
-	}
-
 	delta, err = c.nextToken()
 	if err != nil {
 		return lang.SubtractExpr{}, delta, err
 	}
 
-	return lang.NewSubtractExpr(ctx, left, term), delta, err
+	subExpr, err := lang.NewSubtractExpr(ctx, left, term)
+	return subExpr, delta, err
 }
 
 func (c *Parser) term(ctx *context.Context, left lang.Factor, delta TokenDelta) (lang.Term, TokenDelta, error) {
@@ -185,8 +146,6 @@ func (c *Parser) termAux(ctx *context.Context, left lang.Term, delta TokenDelta)
 	if err != nil {
 		return leftTerm, delta, err
 	}
-
-	fmt.Println(leftTerm)
 
 	if delta.token.IsOperator() && (delta.token.Is(syntax.Multiply) || delta.token.Is(syntax.Divide)) {
 		return c.termAux(ctx, leftTerm, delta)

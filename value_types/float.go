@@ -57,3 +57,12 @@ func (v floatValueType) CanAssign(a ValueType) bool {
 func (v floatValueType) Output() string {
 	return "float64"
 }
+
+func (v floatValueType) ToOrdenable(value any) (float64, error) {
+	floatValue, ok := value.(float64)
+	if !ok {
+		panic("O valor atribuído não é um decimal")
+	}
+
+	return floatValue, nil
+}

@@ -16,7 +16,7 @@ func TestExprSum(t *testing.T) {
 
 	left := lang.NewTermExpr(c, lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 1)))
 	right := lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 2))
-	expectedExpr := lang.NewSumExpr(c, left, right)
+	expectedExpr, _ := lang.NewSumExpr(c, left, right)
 
 	assert.Equal(t, expectedExpr, doc)
 }
@@ -30,7 +30,7 @@ func TestExprSubtract(t *testing.T) {
 
 	left := lang.NewTermExpr(c, lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 1)))
 	right := lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 2))
-	expectedExpr := lang.NewSubtractExpr(c, left, right)
+	expectedExpr, _ := lang.NewSubtractExpr(c, left, right)
 
 	assert.Equal(t, expectedExpr, doc)
 }
@@ -72,7 +72,12 @@ func TestExprOrders(t *testing.T) {
 	doc, delta, err := p.Expr(c, delta)
 	assert.NoError(t, err)
 
-	expectedExpr :=
+	insideExpr, _ := lang.NewSumExpr(c,
+		lang.NewTermExpr(c, lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 2))),
+		lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 2)),
+	)
+
+	expectedExpr, _ :=
 		lang.NewSumExpr(c,
 			lang.NewTermExpr(
 				c, lang.NewMultiplyTerm(c,
@@ -81,10 +86,7 @@ func TestExprOrders(t *testing.T) {
 						lang.NewIntegerFactor(c, 2),
 					),
 					lang.NewExpressionFactor(c,
-						lang.NewSumExpr(c,
-							lang.NewTermExpr(c, lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 2))),
-							lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 2)),
-						),
+						insideExpr,
 					),
 				),
 			),

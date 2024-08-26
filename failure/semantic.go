@@ -40,6 +40,10 @@ func CannotDivideTypes(ltype string, rtype string) error {
 	return SemanticErrorf("Não é possível aplicar uma divisão de um '%s' por um '%s'.", ltype, rtype)
 }
 
+func CannotCompareTypes(ltype string, rtype string) error {
+	return SemanticErrorf("Não é possível comparar '%s' com um '%s'.", ltype, rtype)
+}
+
 func SymbolTypeDiffers(identifier, identifierType, ltype string) error {
 	return SemanticErrorf("Não é possível atribuir um '%s' ao símbolo '%s' (%s).", ltype, identifier, identifierType)
 }

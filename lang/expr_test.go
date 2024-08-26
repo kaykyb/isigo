@@ -75,7 +75,8 @@ func TestSumExpr_Output(t *testing.T) {
 	left := &MockExpr{output: "10"}
 	term := &MockTerm{output: "32"}
 
-	sumExpr := lang.NewSumExpr(&ctx, left, term)
+	sumExpr, err := lang.NewSumExpr(&ctx, left, term)
+	assert.NoError(t, err)
 
 	output, err := sumExpr.Output()
 
@@ -89,7 +90,8 @@ func TestSumExpr_Eval(t *testing.T) {
 	left := &MockExpr{value: 10}
 	term := &MockTerm{evalValue: 32}
 
-	sumExpr := lang.NewSumExpr(&ctx, left, term)
+	sumExpr, err := lang.NewSumExpr(&ctx, left, term)
+	assert.NoError(t, err)
 
 	val, err := sumExpr.Eval(&ctx)
 
@@ -103,7 +105,8 @@ func TestSumExpr_Eval_Float(t *testing.T) {
 	left := &MockExpr{value: 10.5}
 	term := &MockTerm{evalValue: 1.5}
 
-	sumExpr := lang.NewSumExpr(&ctx, left, term)
+	sumExpr, err := lang.NewSumExpr(&ctx, left, term)
+	assert.NoError(t, err)
 
 	val, err := sumExpr.Eval(&ctx)
 
@@ -117,7 +120,8 @@ func TestSumExpr_ResultingType(t *testing.T) {
 	left := &MockExpr{resultType: value_types.IntegerValueTypeEntity}
 	term := &MockTerm{resultingType: value_types.FloatValueTypeEntity}
 
-	sumExpr := lang.NewSumExpr(&ctx, left, term)
+	sumExpr, err := lang.NewSumExpr(&ctx, left, term)
+	assert.NoError(t, err)
 
 	valType, err := sumExpr.ResultingType()
 
@@ -131,7 +135,8 @@ func TestSubtractExpr_Output(t *testing.T) {
 	left := &MockExpr{output: "10"}
 	term := &MockTerm{output: "32"}
 
-	subExpr := lang.NewSubtractExpr(&ctx, left, term)
+	subExpr, err := lang.NewSubtractExpr(&ctx, left, term)
+	assert.NoError(t, err)
 
 	output, err := subExpr.Output()
 
@@ -145,7 +150,8 @@ func TestSubtractExpr_Eval(t *testing.T) {
 	left := &MockExpr{value: 50}
 	term := &MockTerm{evalValue: 8}
 
-	subExpr := lang.NewSubtractExpr(&ctx, left, term)
+	subExpr, err := lang.NewSubtractExpr(&ctx, left, term)
+	assert.NoError(t, err)
 
 	val, err := subExpr.Eval(&ctx)
 
@@ -159,7 +165,8 @@ func TestSubtractExpr_Eval_Float(t *testing.T) {
 	left := &MockExpr{value: 10.5}
 	term := &MockTerm{evalValue: 1.5}
 
-	subExpr := lang.NewSubtractExpr(&ctx, left, term)
+	subExpr, err := lang.NewSubtractExpr(&ctx, left, term)
+	assert.NoError(t, err)
 
 	val, err := subExpr.Eval(&ctx)
 
@@ -173,7 +180,8 @@ func TestSubtractExpr_ResultingType(t *testing.T) {
 	left := &MockExpr{resultType: value_types.IntegerValueTypeEntity}
 	term := &MockTerm{resultingType: value_types.FloatValueTypeEntity}
 
-	subExpr := lang.NewSubtractExpr(&ctx, left, term)
+	subExpr, err := lang.NewSubtractExpr(&ctx, left, term)
+	assert.NoError(t, err)
 
 	valType, err := subExpr.ResultingType()
 

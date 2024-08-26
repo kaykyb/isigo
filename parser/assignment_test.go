@@ -22,9 +22,10 @@ func TestAssignmentCanAssignToDeclaredVariable(t *testing.T) {
 	assignment, delta, err := p.Assignment(c, delta)
 
 	expectedExpr := lang.NewTermExpr(c, lang.NewFactorTerm(c, lang.NewIntegerFactor(c, 1)))
+	expectedAssignment, _ := lang.NewAssignment(c, s, expectedExpr)
 
 	assert.NoError(t, err)
-	assert.Equal(t, lang.NewAssignment(c, s, expectedExpr), assignment)
+	assert.Equal(t, expectedAssignment, assignment)
 	assert.Equal(t, NewTokenDelta(tokens.NewEOF(""), common.NewCodePosition(7, 0, 7)), delta)
 }
 
