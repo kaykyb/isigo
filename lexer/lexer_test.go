@@ -45,7 +45,7 @@ func TestTokenizeCarriageReturnsString(t *testing.T) {
 }
 
 func TestTokenizeOperatorString(t *testing.T) {
-	l := NewStrLexer(t, "+ - * /")
+	l := NewStrLexer(t, "+ - * / > < >= <= != ==")
 	tk, pos, err := l.NextToken()
 
 	assert.NoError(t, err)
@@ -69,8 +69,38 @@ func TestTokenizeOperatorString(t *testing.T) {
 
 	tk, pos, err = l.NextToken()
 	assert.NoError(t, err)
+	assert.Equal(t, tokens.NewOperator(">"), tk)
+	assert.Equal(t, common.NewCodePosition(8, 0, 8), pos)
+
+	tk, pos, err = l.NextToken()
+	assert.NoError(t, err)
+	assert.Equal(t, tokens.NewOperator("<"), tk)
+	assert.Equal(t, common.NewCodePosition(10, 0, 10), pos)
+
+	tk, pos, err = l.NextToken()
+	assert.NoError(t, err)
+	assert.Equal(t, tokens.NewOperator(">="), tk)
+	assert.Equal(t, common.NewCodePosition(12, 0, 12), pos)
+
+	tk, pos, err = l.NextToken()
+	assert.NoError(t, err)
+	assert.Equal(t, tokens.NewOperator("<="), tk)
+	assert.Equal(t, common.NewCodePosition(15, 0, 15), pos)
+
+	tk, pos, err = l.NextToken()
+	assert.NoError(t, err)
+	assert.Equal(t, tokens.NewOperator("!="), tk)
+	assert.Equal(t, common.NewCodePosition(18, 0, 18), pos)
+
+	tk, pos, err = l.NextToken()
+	assert.NoError(t, err)
+	assert.Equal(t, tokens.NewOperator("=="), tk)
+	assert.Equal(t, common.NewCodePosition(21, 0, 21), pos)
+
+	tk, pos, err = l.NextToken()
+	assert.NoError(t, err)
 	assert.Equal(t, tokens.NewEOF(""), tk)
-	assert.Equal(t, common.NewCodePosition(7, 0, 7), pos)
+	assert.Equal(t, common.NewCodePosition(23, 0, 23), pos)
 }
 
 func TestTokenizeIdentifierString(t *testing.T) {
