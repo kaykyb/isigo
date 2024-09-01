@@ -1,14 +1,12 @@
 programa
-    declare a texto.
-    declare b texto.
+    declare tentativa texto, segredo texto.
+    segredo := "segredo".
+    tentativa := "".
 
-    b := "segredo".
-
-    leia(a).
-
-    se (a == b) {
-        escreva("acertou!").
-    } senao {
-        escreva("errou!").
+    enquanto (tentativa != segredo) {
+        escreva("Tente adivinhar o segredo!").
+        leia(tentativa).
     }
+
+    escreva("Parabens!").
 fimprog.
