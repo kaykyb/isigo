@@ -2,6 +2,7 @@ package lang
 
 import (
 	"fmt"
+	"isigo/common"
 	"isigo/context"
 )
 
@@ -48,6 +49,8 @@ func (p IfStatement) outputWithElse() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	condContent = common.Indent(condContent)
 
 	childContent, err := p.child.Output()
 	if err != nil {
