@@ -23,4 +23,5 @@ const (
 	FloatT     = "decimal"
 	StringT    = "texto"
 	BooleanT   = "bool"
+	While      = "enquanto"
 )
