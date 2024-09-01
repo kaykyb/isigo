@@ -1,0 +1,14 @@
+programa
+    declare a texto.
+    declare b texto.
+
+    b := "segredo".
+
+    leia(a).
+
+    se (a == b) {
+        escreva("acertou!").
+    } senao {
+        escreva("errou!").
+    }
+fimprog.

@@ -7,8 +7,8 @@ programa
     leia(a).
 
     se (a > b) {
-        escreva(1).
+        escreva("maior").
     } senao {
-        escreva(2).
+        escreva("menor ou igual").
     }
 fimprog.

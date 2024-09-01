@@ -243,6 +243,10 @@ func (c *Parser) Factor(ctx *context.Context, delta TokenDelta) (lang.Factor, To
 		return c.SymbolFactor(ctx, delta)
 	}
 
+	if delta.token.IsString() {
+		return c.StringFactor(ctx, delta)
+	}
+
 	if delta.token.IsOpenParenthesis() {
 		return c.ExpressionFactor(ctx, delta)
 	}
