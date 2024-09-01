@@ -29,8 +29,9 @@ func (p Block) Output() (string, error) {
 	return content, nil
 }
 
-func (p Block) Eval(ctx *context.Context) (any, error) {
-	return p.child.Eval(ctx)
+func (p Block) Eval(ctx *context.Context) (val any, err error) {
+	newContext := context.NewWithParent(ctx)
+	return p.child.Eval(&newContext)
 }
 
 func (p Block) DeepestContext() *context.Context {

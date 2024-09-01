@@ -92,6 +92,10 @@ func (t *Token) IsIdentifier() bool {
 	return t.internalType == Identifier
 }
 
+func (t *Token) IsEOF() bool {
+	return t.internalType == EOF
+}
+
 func (t *Token) IsAssign() bool {
 	return t.internalType == Assign
 }

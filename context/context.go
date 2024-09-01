@@ -7,8 +7,9 @@ import (
 )
 
 type Context struct {
-	parent      *Context
-	symbolTable symbol.Table
+	parent             *Context
+	symbolTable        symbol.Table
+	ReplacementContext *Context
 }
 
 func New() Context {
@@ -66,4 +67,12 @@ func (c *Context) AssignSymbol(identifier string) error {
 
 func (c *Context) ValidateSymbolUsage() error {
 	return c.symbolTable.ValidateSymbolUsage()
+}
+
+func (c *Context) DeepestReplacementContext() *Context {
+	if c.ReplacementContext == nil || c.ReplacementContext == c {
+		return c.ReplacementContext
+	}
+
+	return c.ReplacementContext.DeepestReplacementContext()
 }

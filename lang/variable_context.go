@@ -40,6 +40,7 @@ func (p VariableContext) Eval(ctx *context.Context) (any, error) {
 		return nil, err
 	}
 
+	ctx.ReplacementContext = &newContext
 	return p.child.Eval(&newContext)
 }
 

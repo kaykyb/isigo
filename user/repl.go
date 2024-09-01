@@ -22,13 +22,12 @@ func Repl() {
 	for {
 		fmt.Print("isigo> ")
 		nextCommand, _ := reader.ReadString('\n')
-		nextCommandCompiled := fmt.Sprintf("programa\n%sfimprog.", nextCommand)
-		source := sources.NewBuildReader(bufio.NewReader(strings.NewReader(nextCommandCompiled)))
+		source := sources.NewBuildReader(bufio.NewReader(strings.NewReader(nextCommand)))
 
 		l := lexer.New(source)
 		p := parser.NewReplParser(&l)
 
-		prog, _, err := p.ParseProgram(currentCtx)
+		prog, _, err := p.ParseREPL(currentCtx)
 
 		if err != nil {
 			fmt.Printf("🔴 %v\n", err)
@@ -43,6 +42,9 @@ func Repl() {
 
 		fmt.Printf("🟢 %v\n", result)
 
-		currentCtx = prog.DeepestContext()
+		replacementCtx := currentCtx.DeepestReplacementContext()
+		if replacementCtx != nil {
+			currentCtx = replacementCtx
+		}
 	}
 }

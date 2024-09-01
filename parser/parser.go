@@ -58,3 +58,12 @@ func (c *Parser) ParseProgram(ctx *context.Context) (lang.Program, TokenDelta, e
 
 	return c.Prog(ctx, delta)
 }
+
+func (c *Parser) ParseREPL(ctx *context.Context) (lang.EvaluableNode, TokenDelta, error) {
+	delta, err := c.nextToken()
+	if err != nil {
+		return lang.Block{}, delta, err
+	}
+
+	return c.REPL(ctx, delta)
+}
