@@ -88,7 +88,8 @@ func IsReservedWord(s string) bool {
 		syntax.Else,
 		syntax.Read,
 		syntax.Write,
-		syntax.While:
+		syntax.While,
+		syntax.Do:
 		return true
 	default:
 		return false

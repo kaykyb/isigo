@@ -24,4 +24,5 @@ const (
 	StringT    = "texto"
 	BooleanT   = "bool"
 	While      = "enquanto"
+	Do         = "faca"
 )

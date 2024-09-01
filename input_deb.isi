@@ -1,12 +1,12 @@
 programa
     declare tentativa texto, segredo texto.
     segredo := "segredo".
-    tentativa := "".
+    tentativa := "segredo".
 
-    enquanto (tentativa != segredo) {
+    faca {
         escreva("Tente adivinhar o segredo!").
         leia(tentativa).
-    }
+    } enquanto (tentativa != segredo)
 
     escreva("Parabens!").
 fimprog.

@@ -32,6 +32,11 @@ func (c *Parser) DeclareOrCommand(ctx *context.Context, delta TokenDelta) (lang.
 			return c.WhileStatement(ctx, delta)
 		}
 
+		// -> do ... while
+		if delta.token.Is(syntax.Do) {
+			return c.DoWhileStatement(ctx, delta)
+		}
+
 		// -> leia
 		if delta.token.Is(syntax.Read) {
 			return c.Read(ctx, delta)
