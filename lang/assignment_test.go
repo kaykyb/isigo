@@ -37,13 +37,11 @@ func (m *MockExpr) IsExpr() bool {
 
 func TestAssignment_Output(t *testing.T) {
 	ctx := context.New()
-	sym := &symbol.Symbol{
-		Identifier: "x",
-		Type:       value_types.IntegerValueTypeEntity,
-	}
+	sym, _ := ctx.CreateSymbol("x", value_types.IntegerValueTypeEntity)
 
 	expr := &MockExpr{
-		output: "42",
+		output:     "42",
+		resultType: value_types.IntegerValueTypeEntity,
 	}
 
 	assignment, err := lang.NewAssignment(&ctx, sym, expr)
@@ -57,34 +55,26 @@ func TestAssignment_Output(t *testing.T) {
 
 func TestAssignment_Output_Error(t *testing.T) {
 	ctx := context.New()
-	sym := &symbol.Symbol{
-		Identifier: "x",
-		Type:       value_types.IntegerValueTypeEntity,
-	}
+	sym, _ := ctx.CreateSymbol("x", value_types.IntegerValueTypeEntity)
 
 	expr := &MockExpr{
-		output: "",
-		err:    fmt.Errorf("mock error"),
+		output:     "",
+		resultType: value_types.IntegerValueTypeEntity,
+		err:        fmt.Errorf("mock error"),
 	}
 
-	assignment, err := lang.NewAssignment(&ctx, sym, expr)
-	assert.NoError(t, err)
-
-	_, err = assignment.Output()
-
+	_, err := lang.NewAssignment(&ctx, sym, expr)
 	assert.Error(t, err)
 	assert.EqualError(t, err, "mock error")
 }
 
 func TestAssignment_Eval(t *testing.T) {
 	ctx := context.New()
-	sym := &symbol.Symbol{
-		Identifier: "x",
-		Type:       value_types.IntegerValueTypeEntity,
-	}
+	sym, _ := ctx.CreateSymbol("x", value_types.IntegerValueTypeEntity)
 
 	expr := &MockExpr{
-		value: 42,
+		value:      42,
+		resultType: value_types.IntegerValueTypeEntity,
 	}
 
 	assignment, err := lang.NewAssignment(&ctx, sym, expr)
@@ -106,15 +96,11 @@ func TestAssignment_Eval_Error(t *testing.T) {
 	}
 
 	expr := &MockExpr{
-		err: fmt.Errorf("mock error"),
+		err:        fmt.Errorf("mock error"),
+		resultType: value_types.IntegerValueTypeEntity,
 	}
 
-	assignment, err := lang.NewAssignment(&ctx, sym, expr)
-	assert.NoError(t, err)
-
-	_, err = assignment.Eval(&ctx)
-
+	_, err := lang.NewAssignment(&ctx, sym, expr)
 	assert.Error(t, err)
 	assert.EqualError(t, err, "mock error")
-	assert.False(t, sym.Assigned)
 }
