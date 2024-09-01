@@ -90,7 +90,14 @@ func (p InequalityExpr) Eval(ctx *context.Context) (any, error) {
 	}
 
 	leftOrdenableValue, err := ordernableLeftType.ToOrdenable(leftEval)
+	if err != nil {
+		return InequalityExpr{}, err
+	}
+
 	rightOrdenableValue, err := ordernableRightType.ToOrdenable(rightEval)
+	if err != nil {
+		return InequalityExpr{}, err
+	}
 
 	switch p.operator {
 	case ">":
