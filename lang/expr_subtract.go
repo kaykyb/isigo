@@ -67,9 +67,9 @@ func (p SubtractExpr) Eval(ctx *context.Context) (any, error) {
 	}
 
 	switch left := leftEval.(type) {
-	case int:
+	case int64:
 		switch factor := termEval.(type) {
-		case int:
+		case int64:
 			return left + factor, nil
 		case float64:
 			return float64(left) + factor, nil
@@ -78,7 +78,7 @@ func (p SubtractExpr) Eval(ctx *context.Context) (any, error) {
 		}
 	case float64:
 		switch factor := termEval.(type) {
-		case int:
+		case int64:
 			return left + float64(factor), nil
 		case float64:
 			return left + factor, nil
