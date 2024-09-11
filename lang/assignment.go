@@ -36,7 +36,7 @@ func (p Assignment) Output() (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("%s = %s", p.to.Identifier, exprContent), nil
+	return fmt.Sprintf("%s = %s(%s)", p.to.Identifier, p.to.Type.Output(), exprContent), nil
 }
 
 func (p Assignment) Eval(ctx *context.Context) (any, error) {

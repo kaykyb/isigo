@@ -44,7 +44,11 @@ func (v integerValueType) ResultingSumType(by ValueType) (ValueType, error) {
 }
 
 func (v integerValueType) ResultingMultiplicationType(by ValueType) (ValueType, error) {
-	if by == IntegerValueTypeEntity || by == FloatValueTypeEntity {
+	if by == IntegerValueTypeEntity {
+		return IntegerValueTypeEntity, nil
+	}
+
+	if by == FloatValueTypeEntity {
 		return FloatValueTypeEntity, nil
 	}
 
