@@ -110,11 +110,6 @@ func (c *Parser) subtractExpr(ctx *context.Context, left lang.Expr, delta TokenD
 		return lang.SubtractExpr{}, delta, err
 	}
 
-	delta, err = c.nextToken()
-	if err != nil {
-		return lang.SubtractExpr{}, delta, err
-	}
-
 	subExpr, err := lang.NewSubtractExpr(ctx, left, term)
 	return subExpr, delta, err
 }
