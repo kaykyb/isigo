@@ -1,0 +1,8 @@
+programa
+    declare i inteiro.
+    i := 0.
+    enquanto (i < 4) {
+        escreva(i).
+        i := i + 1.
+    }
+fimprog.

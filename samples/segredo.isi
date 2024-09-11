@@ -1,0 +1,11 @@
+programa
+    declare senha texto, tentativa texto.
+    senha := "segredo".
+    leia(tentativa).
+    
+    se (senha == tentativa) {
+        escreva("Parabens!").
+    } senao {
+        escreva("Tente novamente!").
+    }
+fimprog.
