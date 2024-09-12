@@ -1,0 +1,9 @@
+programa
+    declare rept inteiro.
+
+    rept := 4.
+
+    declare rept inteiro.
+
+    escreva(rept).
+fimprog.

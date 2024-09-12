@@ -1,0 +1,13 @@
+programa
+    declare i inteiro.
+
+    i := 0.
+
+    faca {
+        escreva(i).
+        i := i + 1.
+    } enquanto (i != 10)
+
+    escreva(acabou).
+    
+fimprog.

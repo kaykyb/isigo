@@ -1,0 +1,13 @@
+programa
+    declare a decimal.
+    declare b decimal.
+    declare result decimal.
+
+    a := 4.2.
+    b := 8.8.
+
+    result := a + b.
+
+    escreva(result). 
+    
+fimprog.

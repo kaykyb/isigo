@@ -1,0 +1,13 @@
+programa
+    declare a inteiro.
+    declare b inteiro.
+    declare result inteiro.
+
+    a := 10.
+    b := 6.
+
+    result := a - b.
+
+    escreva(result). 
+    
+fimprog.

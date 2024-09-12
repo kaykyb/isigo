@@ -1,0 +1,13 @@
+programa
+    declare a inteiro.
+    declare b inteiro.
+    declare result inteiro.
+
+    a := 5.
+    b := 2.
+
+    result := a * b.
+
+    escreva(result). 
+    
+fimprog.

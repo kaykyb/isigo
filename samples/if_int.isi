@@ -1,0 +1,13 @@
+programa
+    declare a inteiro.
+    declare b inteiro.
+    
+    a := 4.
+    b := 5.
+
+    se (a < b) {
+        escreva("variável b é maior").
+    } senao {
+        escreva("variável a é maior").
+    }
+fimprog.

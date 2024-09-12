@@ -1,0 +1,13 @@
+programa
+    declare a decimal.
+    declare b decimal.
+    
+    a := 6.2.
+    b := 3.4.
+
+    se (a > b) {
+        escreva("variável a é maior").
+    } senao {
+        escreva("variável b é maior").
+    }
+fimprog.

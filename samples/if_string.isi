@@ -1,0 +1,13 @@
+programa
+    declare a texto.
+    declare b texto.
+    
+    a := "teste".
+    b := "testa".
+
+    se (a == b) {
+        escreva("variáveis são iguais").
+    } senao {
+        escreva("variáveis são diferentes").
+    }
+fimprog.

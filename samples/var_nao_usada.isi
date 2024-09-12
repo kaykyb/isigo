@@ -1,0 +1,9 @@
+programa
+    declare a decimal.
+    declare b decimal.
+
+    b := 10.6.
+
+    escreva(b).
+
+fimprog.

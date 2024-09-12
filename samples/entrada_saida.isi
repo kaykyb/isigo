@@ -1,0 +1,8 @@
+programa
+    declare entrada texto.
+
+    leia(entrada).
+
+    escreva(entrada).
+    
+fimprog.
