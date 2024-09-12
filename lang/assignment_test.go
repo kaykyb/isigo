@@ -50,7 +50,7 @@ func TestAssignment_Output(t *testing.T) {
 	output, err := assignment.Output()
 
 	assert.NoError(t, err)
-	assert.Equal(t, "x = 42", output)
+	assert.Equal(t, "x = int64(42)", output)
 }
 
 func TestAssignment_Output_Error(t *testing.T) {

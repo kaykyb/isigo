@@ -28,7 +28,7 @@ func TestIntegerFactor_Eval(t *testing.T) {
 	val, err := intFactor.Eval(&ctx)
 
 	assert.NoError(t, err)
-	assert.Equal(t, 42, val)
+	assert.Equal(t, int64(42), val)
 }
 
 func TestIntegerFactor_ResultingType(t *testing.T) {

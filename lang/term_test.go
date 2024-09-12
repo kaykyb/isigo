@@ -84,15 +84,15 @@ func TestMultiplyTerm_Output(t *testing.T) {
 
 func TestMultiplyTerm_Eval(t *testing.T) {
 	ctx := context.New()
-	left := &MockFactor{evalValue: 6}
-	factor := &MockFactor{evalValue: 7}
+	left := &MockFactor{evalValue: int64(6)}
+	factor := &MockFactor{evalValue: int64(7)}
 
 	term := lang.NewMultiplyTerm(&ctx, lang.NewFactorTerm(&ctx, left), factor)
 
 	val, err := term.Eval(&ctx)
 
 	assert.NoError(t, err)
-	assert.Equal(t, 42, val)
+	assert.Equal(t, int64(42), val)
 }
 
 func TestMultiplyTerm_ResultingType(t *testing.T) {
@@ -105,7 +105,7 @@ func TestMultiplyTerm_ResultingType(t *testing.T) {
 	valType, err := term.ResultingType()
 
 	assert.NoError(t, err)
-	assert.Equal(t, value_types.FloatValueTypeEntity, valType)
+	assert.Equal(t, value_types.IntegerValueTypeEntity, valType)
 }
 
 func TestDivideTerm_Output(t *testing.T) {
@@ -123,8 +123,8 @@ func TestDivideTerm_Output(t *testing.T) {
 
 func TestDivideTerm_Eval(t *testing.T) {
 	ctx := context.New()
-	left := &MockFactor{evalValue: 42}
-	factor := &MockFactor{evalValue: 7}
+	left := &MockFactor{evalValue: int64(42)}
+	factor := &MockFactor{evalValue: int64(7)}
 
 	term := lang.NewDivideTerm(&ctx, lang.NewFactorTerm(&ctx, left), factor)
 
@@ -136,8 +136,8 @@ func TestDivideTerm_Eval(t *testing.T) {
 
 func TestDivideTerm_EvalFloat(t *testing.T) {
 	ctx := context.New()
-	left := &MockFactor{evalValue: 42}
-	factor := &MockFactor{evalValue: 5}
+	left := &MockFactor{evalValue: int64(42)}
+	factor := &MockFactor{evalValue: int64(5)}
 
 	term := lang.NewDivideTerm(&ctx, lang.NewFactorTerm(&ctx, left), factor)
 

@@ -8,14 +8,14 @@ import (
 
 type IntegerFactor struct {
 	context *context.Context
-	value   int
+	value   int64
 }
 
 func (n IntegerFactor) ResultingType() (value_types.ValueType, error) {
 	return value_types.IntegerValueTypeEntity, nil
 }
 
-func NewIntegerFactor(ctx *context.Context, value int) IntegerFactor {
+func NewIntegerFactor(ctx *context.Context, value int64) IntegerFactor {
 	return IntegerFactor{
 		context: ctx,
 		value:   value,

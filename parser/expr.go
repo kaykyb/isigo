@@ -260,7 +260,7 @@ func (c *Parser) IntegerFactor(ctx *context.Context, delta TokenDelta) (lang.Int
 		return lang.IntegerFactor{}, delta, err
 	}
 
-	integerFactor := lang.NewIntegerFactor(ctx, value)
+	integerFactor := lang.NewIntegerFactor(ctx, int64(value))
 
 	// deltas
 	delta, err = c.nextToken()
