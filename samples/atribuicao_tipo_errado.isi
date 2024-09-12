@@ -1,0 +1,8 @@
+programa
+    declare a texto.
+
+    a:= 1.
+
+    escreva(a).
+    
+fimprog.
