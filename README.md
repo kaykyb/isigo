@@ -1,5 +1,16 @@
 # Isigo
 
+## Integrantes:
+
+- Igor Domingos da Silva Mozetic - 11202320802
+- Kayky de Brito dos Santos - 11202320900
+
+## Vídeo Youtube
+
+[https://youtu.be/RJLUPie-ED8](https://youtu.be/RJLUPie-ED8)
+
+---
+
 > [Read the docs in English here](https://isigo.notion.site/Isigo-Documentation-EN-840c15f6d431487c9c8dc929dc5d1db4)
 
 O Isigo é um compilador simples em Go que converte sua gramática para um binário executável.
